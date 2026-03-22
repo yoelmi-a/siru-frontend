@@ -1,0 +1,23 @@
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-10">
+    @for (item of positions(); track $index) {
+    <div class="card bg-base-200 shadow-xl border border-base-300 hover:shadow-2xl transition-shadow">
+        <div class="card-body">
+            <div class="flex justify-between items-start">
+                <h2 class="card-title text-primary">{{ item.Title }}</h2>
+                <div class="badge badge-secondary text-xs">{{ item.State }}</div>
+            </div>
+            <p class="text-sm opacity-70 italic">{{ item.Description }}</p>
+
+            <div class="flex gap-2 my-2">
+                @for (tech of item.Tecnologies; track $index) {
+                <div class="badge badge-outline">{{tech}}</div>
+                }
+            </div>
+            <div class="card-actions justify-end mt-4">
+                <button class="btn btn-outline btn-sm">Ver detalles</button>
+                <button class="btn btn-primary btn-sm">Aplicar ahora</button>
+            </div>
+        </div>
+    </div>
+    }
+</div>
