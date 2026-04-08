@@ -1,0 +1,182 @@
+<!-- Breadcrumb -->
+<div class="breadcrumbs text-sm text-base-content/60 mb-6">
+  <ul>
+    <li><a routerLink="/admin/users" class="hover:text-primary transition-colors">Usuarios</a></li>
+    <li class="text-primary font-medium">{{ isEditMode() ? 'Editar Usuario' : 'Agregar Usuario' }}</li>
+  </ul>
+</div>
+
+<!-- Page Header -->
+<div class="mb-8 flex items-center gap-4">
+  <div>
+    <h1 class="text-2xl md:text-3xl font-bold text-base-content tracking-tight">{{ isEditMode() ? 'Editar Usuario' : 'Agregar Usuario' }}</h1>
+    <p class="text-base-content/60 text-sm mt-0.5">{{ isEditMode() ? 'Edita los campos para actualizar el usuario' : 'Completa los campos para crear un nuevo usuario' }}</p>
+  </div>
+</div>
+
+
+@if (hasError()) {
+<desktop-error [errors]="errorMessage() ?? 'Error desconocido'" />
+}
+
+<mobile-error #errorModal [errors]="errorMessage() ?? 'Credenciales incorrectas'" />
+
+<!-- Form Card -->
+<form (ngSubmit)="onSubmit()" [formGroup]="accountForm" class="max-w-2xl mx-auto">
+  <div class="card bg-base-100 shadow-sm">
+    <div class="card-body p-6 md:p-8">
+
+      <div class="divider text-xs text-base-content/40 font-medium uppercase tracking-widest">Información personal</div>
+
+      <!-- Name + LastName -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+        <section class="py-4 md:py-2">
+          <label class="label pb-1 text-xl md:text-sm font-semibold" for="name">Nombre<span
+              class="text-error">*</span></label>
+          <label class="input input-lg md:input-md w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-auto h-5" viewBox="0 0 24 24">
+              <g fill="none" class="stroke-base-content/50" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round" stroke-width="1.5">
+                <path d="M17 8.5a5 5 0 1 0-10 0a5 5 0 0 0 10 0" />
+                <path d="M19 20.5a7 7 0 1 0-14 0" />
+              </g>
+            </svg>
+            <input formControlName="name" id="name" type="text" placeholder="Juan" />
+          </label>
+          <form-error-label [control]="accountForm.get('name')!" />
+        </section>
+
+        <section class="py-4 md:py-2">
+          <label class="label pb-1 text-xl md:text-sm font-semibold" for="lastName">Apellido<span
+              class="text-error">*</span></label>
+          <label class="input input-lg md:input-md w-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-auto h-5" viewBox="0 0 24 24">
+              <g fill="none" class="stroke-base-content/50" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round" stroke-width="1.5">
+                <path d="M17 8.5a5 5 0 1 0-10 0a5 5 0 0 0 10 0" />
+                <path d="M19 20.5a7 7 0 1 0-14 0" />
+              </g>
+            </svg>
+            <input formControlName="lastName" id="lastName" type="text" placeholder="Pérez" />
+          </label>
+          <form-error-label [control]="accountForm.get('lastName')!" />
+        </section>
+
+      </section>
+
+      <!-- Email + Phone -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- Email -->
+        <section class="py-4 md:py-2">
+          <label class="label text-xl md:text-sm font-semibold" for="email">Correo electrónico<span
+              class="text-error">*</span></label>
+          <label class="input input-lg md:input-md w-full">
+            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+                <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+              </g>
+            </svg>
+            <input formControlName="email" id="email" inputmode="email" type="email" placeholder="tucorreo@gmail.com" />
+          </label>
+          <form-error-label [control]="accountForm.get('email')!" />
+        </section>
+
+        <!-- Phone -->
+        <section class="py-4 md:py-2">
+          <label class="label text-xl md:text-sm font-semibold" for="phoneNumber">Teléfono</label>
+          <label class="input input-lg md:input-md w-full">
+            <svg class="w-auto h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path fill="none" class="stroke-base-content/50" stroke="currentColor" stroke-linecap="round"
+                stroke-width="1.5"
+                d="m9.159 5.712l-.403-.906c-.263-.592-.395-.888-.592-1.115a2 2 0 0 0-.928-.603C6.949 3 6.625 3 5.976 3c-.948 0-1.422 0-1.82.182a2.12 2.12 0 0 0-1.061 1.169c-.143.413-.102.838-.02 1.689q1.31 13.575 14.886 14.885c.85.082 1.275.123 1.689-.02a2.12 2.12 0 0 0 1.168-1.06c.182-.399.182-.873.182-1.821c0-.649 0-.973-.088-1.26a2 2 0 0 0-.603-.928c-.226-.197-.523-.328-1.115-.592l-.906-.402c-.642-.285-.962-.428-1.288-.459a2 2 0 0 0-.919.128c-.305.119-.574.343-1.114.793c-.537.447-.805.67-1.133.79a2.16 2.16 0 0 1-.981.101c-.346-.05-.61-.192-1.14-.475c-1.645-.88-2.553-1.787-3.433-3.433c-.283-.53-.424-.794-.475-1.14a2.16 2.16 0 0 1 .1-.98c.12-.329.344-.597.791-1.134c.45-.54.675-.809.793-1.114c.114-.292.158-.607.128-.919c-.03-.326-.173-.646-.459-1.288Z" />
+            </svg>
+            <input phoneMask formControlName="phoneNumber" id="phoneNumber" inputmode="tel" type="tel"
+              placeholder="829 XXX XXXX" />
+          </label>
+          <form-error-label [control]="accountForm.get('phoneNumber')!" />
+        </section>
+      </section>
+
+
+      <div class="divider text-xs text-base-content/40 font-medium uppercase tracking-widest mt-2">Acceso y permisos
+      </div>
+
+      <!-- Role -->
+      <section class="py-4 md:py-2">
+        <label class="label pb-1 text-xl md:text-sm font-semibold" for="role">Rol<span
+            class="text-error">*</span></label>
+        <select id="role" formControlName="role" class="select select-lg md:select-md w-full">
+          <option [value]="''" disabled selected>Selecciona un rol</option>
+          @for (role of roles; track role.label) {
+          <option [value]="role.value">{{ role.label }}</option>
+          }
+        </select>
+        <form-error-label [control]="accountForm.get('role')!" />
+      </section>
+
+      @if (!isEditMode()) {
+        <!-- Password + Confirm Password -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <section class="pb-8 md:pb-6">
+            <label class="label pb-1 text-xl md:text-sm font-semibold">Contraseña<span class="text-error">*</span></label>
+            <label class="input input-lg md:input-md w-full">
+              <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+                  <path
+                    d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z">
+                  </path>
+                  <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                </g>
+              </svg>
+              <input formControlName="password" type="password" placeholder="Contraseña" />
+            </label>
+            <form-error-label [control]="accountForm.get('password')!" />
+          </section>
+
+          <section class="pb-8 md:pb-6">
+            <label class="label pb-1 text-xl md:text-sm font-semibold">Confirmar Contraseña<span
+                class="text-error">*</span></label>
+            <label class="input input-lg md:input-md w-full">
+              <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+                  <path
+                    d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z">
+                  </path>
+                  <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+                </g>
+              </svg>
+              <input formControlName="confirmPassword" type="password" placeholder="Confirmar Contraseña" />
+            </label>
+            <form-error-label [control]="accountForm.get('confirmPassword')!" />
+            @if (accountForm.errors && accountForm.touched && !accountForm.get('confirmPassword')!.errors) {
+            <span class="text-error text-base md:text-sm">Las contraseñas no coinciden</span>
+            }
+          </section>
+        </section>
+      }
+
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col-reverse sm:flex-row justify-end gap-3 mt-4 pt-4 border-t border-base-300">
+        <a routerLink="/admin/users" class="btn btn-ghost w-full sm:w-auto">
+          Cancelar
+        </a>
+        <button type="submit" class="btn btn-primary w-full sm:w-auto gap-2">
+          @if (isPosting()){
+          <span class="loading loading-spinner loading-md"></span>
+          } @else {
+            {{ isEditMode() ? 'Actualizar Usuario' : 'Guardar Usuario' }}
+          }
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Helper note -->
+  <p class="text-center text-xs text-base-content/40 mt-4">
+    Los campos marcados con <span class="text-error">*</span> son obligatorios
+  </p>
+</form>

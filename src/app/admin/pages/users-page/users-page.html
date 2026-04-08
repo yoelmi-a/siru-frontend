@@ -1,0 +1,381 @@
+<div class="min-h-screen bg-base-200 p-4 md:p-8">
+
+  @if (hasError()) {
+  <desktop-error [errors]="errorMessage() ?? 'Error desconocido'" />
+  }
+
+  <mobile-error #errorModal [errors]="errorMessage() ?? 'Credenciales incorrectas'" />
+
+  <!-- Page Header -->
+  <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-base-content tracking-tight">Usuarios</h1>
+      <p class="text-base-content/60 mt-1 text-sm">Gestiona los usuarios del sistema</p>
+    </div>
+    <a routerLink="/admin/users/new" class="btn btn-primary gap-2 shadow-lg w-full sm:w-auto">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Agregar Usuario
+    </a>
+  </div>
+
+  <!-- Filters & Search -->
+   <!-- Implementar esta función en un futuro -->
+  <div class="hidden card bg-base-100 shadow-sm mb-6">
+    <div class="card-body p-4">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <!-- Search -->
+        <label class="input input-bordered flex items-center gap-2 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+          </svg>
+          <input type="text" class="grow" placeholder="Buscar por nombre, email o rol…" />
+        </label>
+        <!-- Role filter -->
+        <select class="select select-bordered w-full sm:w-44">
+          <option disabled selected>Todos los roles</option>
+          <option>Administrador</option>
+          <option>Editor</option>
+          <option>Visor</option>
+        </select>
+        <!-- Status filter -->
+        <select class="select select-bordered w-full sm:w-40">
+          <option disabled selected>Estado</option>
+          <option>Activo</option>
+          <option>Inactivo</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  @if (usersResource.isLoading()) {
+  <div class="flex justify-center items-center">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+  }
+
+  @if (usersResource.hasValue()){
+  <div class="hidden md:block card bg-base-100 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="table table-zebra">
+        <thead class="bg-base-200 text-base-content/70 text-xs uppercase tracking-wider">
+          <tr>
+            <th>Usuario</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Teléfono</th>
+            <th>Creado en</th>
+            <th class="text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (user of usersResource.value().items; track user.id) {
+          <!-- Row 1 -->
+          <tr class="hover">
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="avatar">
+                  <div
+                    class="mask mask-squircle h-10 w-10 bg-primary text-primary-content flex items-center justify-center text-sm font-bold">
+                    {{ user.name[0] }}{{ user.lastName[0] }}
+                  </div>
+                </div>
+                <div>
+                  <div class="font-semibold text-sm">{{ user.name }} {{ user.lastName }}</div>
+                  <div class="text-xs text-base-content/50">{{ user.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge badge-primary badge-outline badge-sm font-medium">{{ user.roles.at(0) ?? "Rol
+                Desconocido" | role }}</span></td>
+            <td>
+              <span [ngClass]="{ 'badge-success': !user.isDeleted, 'badge-ghost': user.isDeleted}"
+                class="badge badge-sm gap-1">
+                <span class="inline-block h-1.5 w-1.5 rounded-full bg-current">
+                </span>
+                @if (user.isDeleted) {
+                Inactivo
+                } @else {
+                Activo
+                }
+              </span>
+            </td>
+            <td class="text-sm text-base-content/60">{{ user.phoneNumber | dominicanPhone }}</td>
+            <td class="text-sm text-base-content/60">{{ user.createdAt | date : "longDate" : "GMT-4" }}, {{
+              user.createdAt | date : "h:mm a" : "GMT-4" }}</td>
+            <td class="text-right">
+              <div class="flex items-center justify-end gap-1">
+                <a [routerLink]="['/admin/users', user.id]"
+                  class="btn btn-ghost btn-xs gap-1 text-info hover:bg-info/10">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Editar
+                </a>
+                <button [ngClass]="{ 'text-error hover:bg-error/10': !user.isDeleted, 'text-success hover:bg-success/10': user.isDeleted}" (click)="onChangeStatusClick(user)"
+                  class="btn btn-ghost btn-xs gap-1">
+                  @if (user.isDeleted) {
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-auto h-5" viewBox="0 0 24 24">
+                    <path fill="none" class="stroke-success" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" stroke-width="1.5"
+                      d="M21 12a9 9 0 1 1-1.383-4.797m1.09-4.202l-.173 2.054c-.124 1.479-.186 2.218-.668 2.634s-1.193.343-2.615.197l-2.044-.21" />
+                  </svg>
+                  Activar
+                  } @else {
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-auto h-5" viewBox="0 0 24 24">
+                    <path fill="none" class="stroke-error" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12s4.477 10 10 10s10-4.477 10-10m-7 3L9 9m0 6l6-6" />
+                  </svg>
+                  Desactivar
+                  }
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── MOBILE CARDS (below md) ── -->
+  <div class="flex md:hidden flex-col gap-3">
+
+    @for (user of usersResource.value().items; track user.id) {
+
+    <!-- Card 1 -->
+    <div class="card bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="avatar">
+              <div
+                class="mask mask-squircle h-11 w-11 bg-primary text-primary-content flex items-center justify-center text-sm font-bold">
+                {{ user.name[0] }}{{ user.lastName[0] }}</div>
+            </div>
+            <div>
+              <p class="font-semibold text-sm">{{ user.name }} {{ user.lastName }}</p>
+              <p class="text-xs text-base-content/50">{{ user.email }}</p>
+            </div>
+          </div>
+          <span [ngClass]="{ 'badge-success': !user.isDeleted, 'badge-ghost': user.isDeleted}"
+            class="badge badge-sm gap-1 mt-0.5"><span class="inline-block h-1.5 w-1.5 rounded-full bg-current"></span>
+            @if (user.isDeleted) {
+            Inactivo
+            } @else {
+            Activo
+            }
+          </span>
+        </div>
+        <div class="mt-0.5">
+
+          <span class="badge badge-primary badge-soft font-bold badge-sm">Administrador</span>
+        </div>
+
+        <ul class="mt-2 flex flex-col gap-2">
+          <li class="text-base-content text-xs font-bold uppercase tracking-wider">
+            Teléfono : <span class="text-xs text-base-content/60 font-bold uppercase">{{ user.phoneNumber | dominicanPhone }}</span>
+          </li>
+          <li class="text-base-content text-xs font-bold uppercase tracking-wider">
+            Creado en : <span class="text-sm text-base-content/60">{{ user.createdAt | date : "shortDate" : "GMT-4" }},
+              {{
+              user.createdAt | date : "h:mm a" : "GMT-4" }}</span>
+          </li>
+        </ul>
+        <div class="divider mt-2"></div>
+        <div class="flex items-center justify-end">
+
+          <div class="flex gap-2">
+            <button class="btn btn-info btn-outline btn-sm gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Editar
+            </button>
+            <button [ngClass]="{ 'btn-error hover:text-error-content': !user.isDeleted, 'btn-success': user.isDeleted}" (click)="onChangeStatusClick(user)"
+                  class="btn btn-outline btn-sm gap-1">
+                  @if (user.isDeleted) {
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-auto h-5" viewBox="0 0 24 24">
+                    <path fill="none" stroke="currentColor" stroke-linecap="round"
+                      stroke-linejoin="round" stroke-width="1.5"
+                      d="M21 12a9 9 0 1 1-1.383-4.797m1.09-4.202l-.173 2.054c-.124 1.479-.186 2.218-.668 2.634s-1.193.343-2.615.197l-2.044-.21" />
+                  </svg>
+                  Activar
+                  } @else {
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-auto h-5" viewBox="0 0 24 24">
+                    <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12s4.477 10 10 10s10-4.477 10-10m-7 3L9 9m0 6l6-6" />
+                  </svg>
+                  Desactivar
+                  }
+                </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    }
+
+    <!-- Card 1 -->
+    <div class="card bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="avatar">
+              <div
+                class="mask mask-squircle h-11 w-11 bg-primary text-primary-content flex items-center justify-center text-sm font-bold">
+                AM</div>
+            </div>
+            <div>
+              <p class="font-semibold text-sm">Ana Martínez</p>
+              <p class="text-xs text-base-content/50">ana.martinez@empresa.com</p>
+            </div>
+          </div>
+          <span class="badge badge-success badge-sm gap-1 mt-0.5"><span
+              class="inline-block h-1.5 w-1.5 rounded-full bg-current"></span>Activo</span>
+        </div>
+        <div class="divider my-2"></div>
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col gap-1">
+            <span class="badge badge-primary badge-outline badge-sm">Administrador</span>
+            <span class="text-xs text-base-content/50">Hace 2 horas</span>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-info btn-outline btn-sm gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Editar
+            </button>
+            <button class="btn btn-error btn-outline btn-sm gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="avatar">
+              <div
+                class="mask mask-squircle h-11 w-11 bg-secondary text-secondary-content flex items-center justify-center text-sm font-bold">
+                CR</div>
+            </div>
+            <div>
+              <p class="font-semibold text-sm">Carlos Ruiz</p>
+              <p class="text-xs text-base-content/50">carlos.ruiz@empresa.com</p>
+            </div>
+          </div>
+          <span class="badge badge-success badge-sm gap-1 mt-0.5"><span
+              class="inline-block h-1.5 w-1.5 rounded-full bg-current"></span>Activo</span>
+        </div>
+        <div class="divider my-2"></div>
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col gap-1">
+            <span class="badge badge-secondary badge-outline badge-sm">Editor</span>
+            <span class="text-xs text-base-content/50">Hace 1 día</span>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-info btn-outline btn-sm gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Editar
+            </button>
+            <button class="btn btn-error btn-outline btn-sm gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card bg-base-100 shadow-sm">
+      <div class="card-body p-4">
+        <div class="flex items-start justify-between">
+          <div class="flex items-center gap-3">
+            <div class="avatar">
+              <div
+                class="mask mask-squircle h-11 w-11 bg-accent text-accent-content flex items-center justify-center text-sm font-bold">
+                LG</div>
+            </div>
+            <div>
+              <p class="font-semibold text-sm">Lucía García</p>
+              <p class="text-xs text-base-content/50">lucia.garcia@empresa.com</p>
+            </div>
+          </div>
+          <span class="badge badge-error badge-sm gap-1 mt-0.5"><span
+              class="inline-block h-1.5 w-1.5 rounded-full bg-current"></span>Inactivo</span>
+        </div>
+        <div class="divider my-2"></div>
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col gap-1">
+            <span class="badge badge-ghost badge-sm">Visor</span>
+            <span class="text-xs text-base-content/50">Hace 5 días</span>
+          </div>
+          <div class="flex gap-2">
+            <button class="btn btn-info btn-outline btn-sm gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Editar
+            </button>
+            <button class="btn btn-error btn-outline btn-sm gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <pagination [currentPage]="paginationService.currentPage()" [hasNextPage]="usersResource.value().hasNextPage"
+    [hasPreviousPage]="usersResource.value().hasPreviousPage" [pageSize]="usersResource.value().pageSize"
+    [totalCount]="usersResource.value().totalCount" />
+  }
+
+</div>
+
+
+
+<!-- ══════════════════════════════════════
+     MODAL — Confirmar Eliminación
+     ══════════════════════════════════════ -->
+<change-status-modal #changeStatusModal
+    (cancelled)="onChangeStatusCancelled()"
+    (confirmed)="onChangeStatusConfirmed()" />
