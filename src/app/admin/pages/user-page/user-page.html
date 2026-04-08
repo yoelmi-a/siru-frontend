@@ -1,0 +1,9 @@
+@if (userResource.isLoading()) {
+  <div class="flex justify-center items-center h-screen">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+}
+
+@if (userResource.hasValue()) {
+  <user-form [id]="userId()" [isEditMode]="isEditMode()" [account]="userResource.value()" />
+}

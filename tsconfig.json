@@ -3,11 +3,13 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "paths": {
       "@auth/*" : ["./src/app/auth/*"],
       "@shared/*": ["./src/app/shared/*"],
       "@vacants/*": ["./src/app/vacants/*"],
+      "@utils/*" : ["./src/app/utils/*"],
+      "@admin/*" : ["./src/app/admin/*"],
+      "@pipes/*" : ["./src/app/pipes/*"],
     },
     "strict": true,
     "noImplicitOverride": true,
