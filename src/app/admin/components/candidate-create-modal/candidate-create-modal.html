@@ -1,0 +1,78 @@
+<dialog #dialog class="modal">
+  <div class="modal-box w-11/12 max-w-2xl">
+    <div class="mb-4">
+      <h3 class="font-bold text-lg">{{ isEdit() ? 'Editar candidato' : 'Nuevo candidato' }}</h3>
+      <p class="text-sm text-base-content/60 mt-1">
+        {{ isEdit() ? 'Actualiza la informacion del candidato.' : 'Completa la informacion para registrar un nuevo candidato.' }}
+      </p>
+    </div>
+
+    @if (errorMessage()) {
+    <div role="alert" class="alert alert-error mb-4">
+      <span>{{ errorMessage() }}</span>
+    </div>
+    }
+
+    <!-- Fake Upload CV -->
+    @if (!isEdit()) {
+      <div class="mb-4 p-4 border border-dashed border-primary rounded-xl bg-primary/5">
+        <h4 class="font-bold mb-2">Reclutamiento Inteligente (IA)</h4>
+        <p class="text-sm mb-3">Sube el CV en formato PDF y nosotros extraemos los datos automáticamente.</p>
+        <div class="flex items-center gap-3">
+          <input 
+            type="file" 
+            class="file-input file-input-bordered file-input-primary w-full max-w-xs" 
+            accept=".pdf,.doc,.docx"
+            (change)="onFakeUpload($event)"
+            [disabled]="isUploadingCv()"
+          />
+          @if (isUploadingCv()) {
+            <span class="loading loading-spinner text-primary"></span>
+            <span class="text-sm font-medium text-primary">Analizando CV...</span>
+          }
+        </div>
+      </div>
+    }
+
+    <form [formGroup]="candidateForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <section>
+        <label class="label pb-1 text-sm font-semibold" for="names">Nombres<span class="text-error">*</span></label>
+        <input id="names" type="text" class="input input-bordered w-full" formControlName="names" placeholder="Ej: Juan Carlos" />
+        <form-error-label [control]="candidateForm.get('names')!" />
+      </section>
+
+      <section>
+        <label class="label pb-1 text-sm font-semibold" for="lastNames">Apellidos<span class="text-error">*</span></label>
+        <input id="lastNames" type="text" class="input input-bordered w-full" formControlName="lastNames" placeholder="Ej: Perez Gomez" />
+        <form-error-label [control]="candidateForm.get('lastNames')!" />
+      </section>
+
+      <section>
+        <label class="label pb-1 text-sm font-semibold" for="email">Correo<span class="text-error">*</span></label>
+        <input id="email" type="email" class="input input-bordered w-full" formControlName="email" placeholder="ejemplo@correo.com" />
+        <form-error-label [control]="candidateForm.get('email')!" />
+      </section>
+
+      <section>
+        <label class="label pb-1 text-sm font-semibold" for="phoneNumber">Telefono<span class="text-error">*</span></label>
+        <input id="phoneNumber" type="text" class="input input-bordered w-full" formControlName="phoneNumber" placeholder="8091234567" />
+        <form-error-label [control]="candidateForm.get('phoneNumber')!" />
+      </section>
+
+      <section>
+        <label class="label pb-1 text-sm font-semibold" for="cvUrl">URL CV<span class="text-error">*</span></label>
+        <input id="cvUrl" type="text" class="input input-bordered w-full" formControlName="cvUrl" placeholder="https://..." />
+        <form-error-label [control]="candidateForm.get('cvUrl')!" />
+      </section>
+
+      <div class="modal-action mt-6">
+        <app-button variant="ghost" (pressed)="onCancel()">Cancelar</app-button>
+        <app-button type="submit" variant="primary" [loading]="isPosting()">
+          {{ isEdit() ? 'Actualizar candidato' : 'Guardar candidato' }}
+        </app-button>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop" (click)="onCancel()"></div>
+</dialog>

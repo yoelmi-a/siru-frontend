@@ -1,0 +1,33 @@
+<dialog #dialog class="modal">
+  <div class="modal-box w-11/12 max-w-xl">
+    <div class="mb-4">
+      <h3 class="font-bold text-lg">{{ isEdit() ? 'Editar departamento' : 'Nuevo departamento' }}</h3>
+      <p class="text-sm text-base-content/60 mt-1">
+        {{ isEdit() ? 'Actualiza la informacion del departamento.' : 'Completa la informacion para registrar un nuevo departamento.' }}
+      </p>
+    </div>
+
+    @if (errorMessage()) {
+    <div role="alert" class="alert alert-error mb-4">
+      <span>{{ errorMessage() }}</span>
+    </div>
+    }
+
+    <form [formGroup]="departmentForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <section>
+        <label class="label pb-1 text-sm font-semibold" for="name">Nombre<span class="text-error">*</span></label>
+        <input id="name" type="text" class="input input-bordered w-full" formControlName="name" placeholder="Ej: Tecnologia" />
+        <form-error-label [control]="departmentForm.get('name')!" />
+      </section>
+
+      <div class="modal-action mt-6">
+        <app-button variant="ghost" (pressed)="onCancel()">Cancelar</app-button>
+        <app-button type="submit" variant="primary" [loading]="isPosting()">
+          {{ isEdit() ? 'Actualizar departamento' : 'Guardar departamento' }}
+        </app-button>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop" (click)="onCancel()"></div>
+</dialog>

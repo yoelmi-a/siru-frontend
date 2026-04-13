@@ -1,0 +1,69 @@
+<div class="min-h-screen bg-base-200 p-4 md:p-8 w-full">
+	<app-vacant-create-modal #createVacantModal (created)="onVacantCreated()"></app-vacant-create-modal>
+
+	<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+		<div>
+			<h1 class="text-3xl font-bold text-base-content tracking-tight">Vacantes</h1>
+			<p class="text-base-content/60 mt-1 text-sm">Gestiona las vacantes publicadas en el sistema</p>
+		</div>
+		<button class="btn btn-primary gap-2 shadow-lg w-full sm:w-auto" (click)="onOpenCreateModal()">
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+			</svg>
+			Crear vacante
+		</button>
+	</div>
+
+	<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+		<div class="card bg-base-100 shadow-sm border border-base-300/70">
+			<div class="card-body py-4 px-5">
+				<p class="text-xs uppercase tracking-wider text-base-content/60 font-semibold">Total visibles</p>
+				<p class="text-2xl font-bold text-base-content">{{ vacantsList().length }}</p>
+			</div>
+		</div>
+		<div class="card bg-base-100 shadow-sm border border-success/20">
+			<div class="card-body py-4 px-5">
+				<p class="text-xs uppercase tracking-wider text-base-content/60 font-semibold">Activas</p>
+				<p class="text-2xl font-bold text-success">{{ activeVacants() }}</p>
+			</div>
+		</div>
+		<div class="card bg-base-100 shadow-sm border border-base-300/70">
+			<div class="card-body py-4 px-5">
+				<p class="text-xs uppercase tracking-wider text-base-content/60 font-semibold">Inactivas</p>
+				<p class="text-2xl font-bold text-base-content/80">{{ inactiveVacants() }}</p>
+			</div>
+		</div>
+	</div>
+
+	@if (vacantsResource.isLoading()) {
+	<div class="flex justify-center items-center py-12">
+		<span class="loading loading-spinner loading-lg"></span>
+	</div>
+	}
+
+	<app-admin-vacants-card
+		[positions]="vacantCards()"
+		[detailRoute]="'/admin/vacants'"
+		[class.hidden]="!(vacantsResource.hasValue() && vacantsList().length > 0)"
+	></app-admin-vacants-card>
+
+	@if (vacantsResource.hasValue() && paginationData()) {
+	<pagination
+		[currentPage]="paginationData()!.page"
+		[hasPreviousPage]="paginationData()!.hasPreviousPage"
+		[hasNextPage]="paginationData()!.hasNextPage"
+		[totalCount]="paginationData()!.totalCount"
+		[pageSize]="paginationData()!.pageSize"
+	/>
+	}
+
+	@if (vacantsResource.hasValue() && vacantsList().length === 0) {
+	<div class="card bg-base-100 shadow-sm">
+		<div class="card-body text-center py-12">
+			<h2 class="text-lg font-semibold text-base-content">No hay vacantes disponibles</h2>
+			<p class="text-base-content/60 mt-1">Aun no existen registros para mostrar en esta sección.</p>
+		</div>
+	</div>
+	}
+
+</div>

@@ -1,0 +1,47 @@
+<div class="min-h-screen bg-base-200 p-4 md:p-8 w-full">
+  <app-candidate-create-modal #createCandidateModal (created)="onCreated()"></app-candidate-create-modal>
+
+  <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-base-content tracking-tight">Candidatos</h1>
+      <p class="text-base-content/60 mt-1 text-sm">Gestiona los candidatos registrados en el sistema</p>
+    </div>
+    <button class="btn btn-primary gap-2 shadow-lg w-full sm:w-auto" (click)="onOpenCreateModal()">Crear candidato</button>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+    <div class="card bg-base-100 shadow-sm border border-base-300/70">
+      <div class="card-body py-4 px-5">
+        <p class="text-xs uppercase tracking-wider text-base-content/60 font-semibold">Total candidatos</p>
+        <p class="text-2xl font-bold text-base-content">{{ candidatesList().length }}</p>
+      </div>
+    </div>
+    <div class="card bg-base-100 shadow-sm border border-base-300/70">
+      <div class="card-body py-4 px-5">
+        <p class="text-xs uppercase tracking-wider text-base-content/60 font-semibold">Con CV</p>
+        <p class="text-2xl font-bold text-base-content">{{ withCvCount() }}</p>
+      </div>
+    </div>
+  </div>
+
+  @if (candidatesResource.isLoading()) {
+  <div class="flex justify-center items-center py-12">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+  }
+
+  <app-admin-vacants-card
+    [positions]="candidateCards()"
+    [detailRoute]="'/admin/candidates'"
+    [class.hidden]="!(candidatesResource.hasValue() && candidatesList().length > 0)"
+  ></app-admin-vacants-card>
+
+  @if (candidatesResource.hasValue() && candidatesList().length === 0) {
+  <div class="card bg-base-100 shadow-sm">
+    <div class="card-body text-center py-12">
+      <h2 class="text-lg font-semibold text-base-content">No hay candidatos disponibles</h2>
+      <p class="text-base-content/60 mt-1">Aun no existen registros para mostrar en esta seccion.</p>
+    </div>
+  </div>
+  }
+</div>

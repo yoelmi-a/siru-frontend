@@ -1,0 +1,132 @@
+<div class="h-[calc(100vh-64px)] w-full p-4 md:p-6">
+  <div class="flex items-center gap-4 mb-6">
+    <button class="btn btn-circle btn-ghost" (click)="goBack()">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+    </button>
+    <h1 class="text-2xl font-bold">Detalle del Empleado</h1>
+  </div>
+
+  @if (employeeResource.isLoading()) {
+    <div class="flex justify-center py-10">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else if (employee(); as emp) {
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Lado Izquierdo: Info Personal -->
+      <div class="col-span-1 lg:col-span-1 space-y-6">
+        <div class="card bg-base-100 shadow-xl border border-base-200">
+          <div class="card-body">
+            <h2 class="card-title border-b pb-2">Información Personal</h2>
+            <div class="mt-4 space-y-3 text-sm">
+              <p><span class="font-semibold text-base-content/70 block">Nombre Completo:</span> {{ emp.name }} {{ emp.lastName }}</p>
+              <p><span class="font-semibold text-base-content/70 block">ID:</span> {{ emp.id }}</p>
+              <p><span class="font-semibold text-base-content/70 block">Email:</span> {{ emp.email }}</p>
+              <p><span class="font-semibold text-base-content/70 block">Teléfono:</span> {{ emp.phoneNumber }}</p>
+              
+              <div class="divider"></div>
+              
+              <p><span class="font-semibold text-base-content/70 block">Fecha de Contratación:</span> {{ emp.hireDate }}</p>
+              <p><span class="font-semibold text-base-content/70 block">Estado Actual:</span>
+                <span class="badge badge-sm mt-1" [class.badge-success]="emp.status === 'Activo'" [class.badge-error]="emp.status === 'Inactivo'">
+                  {{emp.status}}
+                </span>
+              </p>
+            </div>
+            <div class="card-actions justify-end mt-6">
+              <button class="btn btn-outline btn-sm btn-primary" (click)="onEdit()">Editar Empleado</button>
+              <button class="btn btn-outline btn-sm btn-error" (click)="onDelete()">Eliminar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lado Derecho: Historial de Posiciones (HU-09) -->
+      <div class="col-span-1 lg:col-span-2 space-y-6">
+        <div class="card bg-base-100 shadow-xl border border-base-200">
+          <div class="card-body">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="card-title">Historial Laboral Interno (HU-09)</h2>
+              <button class="btn btn-xs btn-outline">Agregar Posición</button>
+            </div>
+            
+            @if (emp.history && emp.history.length > 0) {
+              <div class="overflow-x-auto">
+                <table class="table table-zebra w-full">
+                  <thead>
+                    <tr>
+                      <th>Posición</th>
+                      <th>Departamento</th>
+                      <th>Fecha Inicio</th>
+                      <th>Fecha Fin</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (hist of emp.history; track hist.id) {
+                      <tr>
+                        <td class="font-medium">{{ hist.positionName }}</td>
+                        <td>{{ hist.departmentName }}</td>
+                        <td>{{ hist.startDate }}</td>
+                        <td>
+                          @if (hist.endDate) {
+                            {{ hist.endDate }}
+                          } @else {
+                            <span class="badge badge-ghost badge-sm">Actual</span>
+                          }
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="alert alert-info">
+                <span>No hay historial registrado.</span>
+              </div>
+            }
+          </div>
+        </div>
+        
+        <!-- Tarjeta de Evaluaciones (Módulo HU-10 a HU-13) -->
+        <div class="card bg-base-100 shadow border border-base-200">
+          <div class="card-body">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="card-title">Evaluaciones de Desempeño (HU-10 a HU-13)</h3>
+              <button class="btn btn-primary btn-sm btn-outline" (click)="loadEvaluations()">↻ Cargar Evaluaciones</button>
+            </div>
+            
+            @if (isEvaluationsLoading()) {
+              <div class="flex justify-center py-4">
+                <span class="loading loading-spinner text-primary"></span>
+              </div>
+            } @else if (evaluations().length > 0) {
+              <div class="flex flex-col gap-4">
+                @for (ev of evaluations(); track ev.id) {
+                  <div class="rounded-lg border p-4 bg-base-200/50">
+                    <div class="flex justify-between font-bold text-lg border-b pb-2 mb-2">
+                      <span>{{ ev.date | date: 'dd/MM/yyyy' }}</span>
+                      <span class="text-primary text-xl">Score: {{ ev.averageScore }}%</span>
+                    </div>
+                    <ul class="text-sm list-disc pl-5 opacity-80 mb-2">
+                      @for (score of ev.scores; track score.criteriaId) {
+                        <li>{{ score.criteriaName }}: {{ score.score }}/100</li>
+                      }
+                    </ul>
+                    <p class="text-sm italic">"{{ ev.comments }}"</p>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="alert alert-warning text-sm">Haz clic en Cargar Evaluaciones, o el empleado no tiene historial de desempeño.</div>
+            }
+          </div>
+        </div>
+      </div>
+
+    </div>
+  }
+</div>
+
+<app-employee-create-modal (saved)="onSaved()"></app-employee-create-modal>

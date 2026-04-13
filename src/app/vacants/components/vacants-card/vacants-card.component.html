@@ -1,23 +1,51 @@
 <!-- TODO: Hacer el header responsive para móvil -->
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-10">
+<div class="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-6">
     @for (item of positions(); track $index) {
-    <div class="card bg-base-200 shadow-xl border border-base-300 hover:shadow-2xl transition-shadow">
-        <div class="card-body">
-            <div class="flex justify-between items-start">
-                <h2 class="card-title text-primary">{{ item.Title }}</h2>
-                <div class="badge badge-secondary text-xs">{{ item.State }}</div>
+    <div
+        class="card w-full h-full bg-base-200 shadow-md border border-base-300 hover:shadow-xl transition-all duration-200"
+        [class.cursor-pointer]="isAdminModule()"
+        (click)="onCardClick(item.Id)"
+    >
+        <div class="card-body gap-5">
+            <!-- Título y Estado -->
+            <div class="flex items-start justify-between gap-3 pb-2 border-b border-base-300">
+                <div class="flex-1">
+                    <p class="text-xs uppercase tracking-wider text-base-content/50 font-semibold mb-1">Vacante</p>
+                    <h2 class="card-title text-lg md:text-base text-primary leading-tight">{{ item.Title }}</h2>
+                </div>
+                <div class="badge badge-secondary text-xs mt-1 whitespace-nowrap">{{ item.State }}</div>
             </div>
-            <p class="text-sm opacity-70 italic">{{ item.Description }}</p>
 
-            <div class="flex gap-2 my-2">
-                @for (tech of item.Tecnologies; track $index) {
-                <div class="badge badge-outline">{{tech}}</div>
-                }
+            <!-- Descripción -->
+            <div class="space-y-2">
+                <p class="text-xs uppercase tracking-wider text-base-content/50 font-semibold">Descripción</p>
+                <div class="rounded-md bg-base-100/70 p-3 border border-base-300/50 min-h-16">
+                    <p class="text-sm opacity-85 leading-relaxed line-clamp-3">{{ item.Description }}</p>
+                </div>
             </div>
-            <div class="card-actions justify-end mt-4">
+
+            <!-- Perfil Requerido -->
+            <div class="space-y-2">
+                <p class="text-xs uppercase tracking-wider text-base-content/50 font-semibold">Perfil requerido</p>
+                <div class="flex flex-wrap gap-2 min-h-8">
+                    @for (tech of item.Tecnologies; track $index) {
+                    <div class="badge badge-outline badge-sm">{{tech}}</div>
+                    }
+                    @if (item.Tecnologies.length === 0) {
+                    <div class="badge badge-ghost badge-sm">Sin etiquetas</div>
+                    }
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="card-actions justify-end mt-auto pt-3 border-t border-base-300">
+                @if (isAdminModule()) {
+                <a [routerLink]="[detailRoute(), item.Id]" (click)="$event.stopPropagation()" class="btn btn-primary btn-sm">Ver detalle</a>
+                } @else {
                 <button class="btn btn-outline btn-sm">Ver detalles</button>
-                <button class="btn btn-primary btn-sm">Aplicar ahora</button>
+                <button class="btn btn-primary btn-sm" (click)="onApplyClick(item.Id)">Aplicar ahora</button>
+                }
             </div>
         </div>
     </div>
