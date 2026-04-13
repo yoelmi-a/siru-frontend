@@ -7,48 +7,65 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
         </svg>
       </div>
-      <ul tabindex="-1" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-        <!-- <li><a>Item 1</a></li>
+      <ul tabindex="-1" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-60 p-2 shadow">
         <li>
-          <a>Parent</a>
-          <ul class="p-2">
-            <li><a>Submenu 1</a></li>
-            <li><a>Submenu 2</a></li>
-          </ul>
+          <a routerLink="/vacants">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+              <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 7h8" />
+                <path d="M10 7V5.5A1.5 1.5 0 0 1 11.5 4h1A1.5 1.5 0 0 1 14 5.5V7" />
+                <rect x="3" y="7" width="18" height="13" rx="2" />
+              </g>
+            </svg>
+            Vacantes
+          </a>
         </li>
-        <li><a>Item 3</a></li> -->
+        <li>
+          <a routerLink="/vacants/postulations">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+              <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 3h10l4 4v14H3V3z" />
+                <path d="M8 12h8M8 16h8M15 3v5h6" />
+              </g>
+            </svg>
+            Mis postulaciones
+          </a>
+        </li>
       </ul>
     </div>
-    <a class="btn btn-ghost text-xl">SIRUS</a>
-    <div class="ml-5 hidden lg:flex">
-      <label class="input">
-        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-          </g>
-        </svg>
-        <input type="search" placeholder="Busca vacantes" />
-      </label>
-    </div>
+    <a routerLink="/vacants" class="btn btn-ghost text-xl">SIRUS</a>
   </div>
-  <!-- <div class="navbar-center hidden lg:flex">
-    <ul class="menu menu-horizontal px-1">
-      <li><a>Item 1</a></li>
+
+  <div class="navbar-center hidden lg:flex">
+    <ul class="menu menu-horizontal px-1 gap-1">
       <li>
-        <details>
-          <summary>Parent</summary>
-          <ul class="p-2 bg-base-100 w-40 z-1">
-            <li><a>Submenu 1</a></li>
-            <li><a>Submenu 2</a></li>
-          </ul>
-        </details>
+        <a routerLink="/vacants">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+            <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 7h8" />
+              <path d="M10 7V5.5A1.5 1.5 0 0 1 11.5 4h1A1.5 1.5 0 0 1 14 5.5V7" />
+              <rect x="3" y="7" width="18" height="13" rx="2" />
+            </g>
+          </svg>
+          Vacantes
+        </a>
       </li>
-      <li><a>Item 3</a></li>
+      <li>
+        <a routerLink="/vacants/postulations">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+            <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 3h10l4 4v14H3V3z" />
+              <path d="M8 12h8M8 16h8M15 3v5h6" />
+            </g>
+          </svg>
+          Mis postulaciones
+        </a>
+      </li>
     </ul>
-  </div> -->
+  </div>
+
   <div class="navbar-end">
-    <a class="btn">Button</a>
+    <a routerLink="/auth/login" class="btn btn-primary">Acceder</a>
   </div>
 </div>
 </div>

@@ -1,0 +1,40 @@
+@if (departmentResource.isLoading()) {
+<div class="flex justify-center items-center py-12 w-full">
+  <span class="loading loading-spinner loading-lg"></span>
+</div>
+}
+
+<app-department-create-modal
+  #editDepartmentModal
+  [isEdit]="true"
+  [departmentToEdit]="department()"
+  (updated)="onUpdated()"
+></app-department-create-modal>
+
+@if (departmentResource.hasValue() && department()) {
+<div class="w-full max-w-5xl">
+  <div class="mb-6 flex items-center justify-between gap-3">
+    <div>
+      <h1 class="text-3xl font-bold text-base-content tracking-tight">Detalle de Departamento</h1>
+      <p class="text-base-content/60 mt-1 text-sm">Consulta la informacion completa del departamento.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button class="btn btn-primary btn-sm" (click)="onOpenEditModal()">Editar</button>
+      <button class="btn btn-error btn-sm" [class.btn-disabled]="isDeleting()" (click)="onDelete()">Eliminar</button>
+      <a routerLink="/admin/departments" class="btn btn-outline btn-sm">Volver</a>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow-sm">
+    <div class="card-body p-6 md:p-8">
+      <h2 class="text-2xl font-bold text-base-content">{{ department()!.name }}</h2>
+      <div class="divider"></div>
+
+      <div class="rounded-box bg-base-200/50 p-4">
+        <p class="text-xs uppercase tracking-wider text-base-content/60 font-semibold">Identificador</p>
+        <p class="text-sm md:text-base text-base-content mt-1">{{ department()!.id }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+}

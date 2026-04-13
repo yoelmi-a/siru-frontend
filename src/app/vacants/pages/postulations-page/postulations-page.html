@@ -1,0 +1,58 @@
+<div class="py-8 space-y-6">
+  <div class="flex items-center justify-between gap-3 flex-wrap">
+    <div>
+      <h1 class="text-3xl font-bold">Mis postulaciones</h1>
+      <p class="text-base-content/70 text-sm mt-1">Listado de postulaciones asociadas al candidato actual.</p>
+    </div>
+    <a routerLink="/vacants" class="btn btn-outline btn-sm">Volver a vacantes</a>
+  </div>
+
+  @if (!hasCandidateId()) {
+  <div class="alert alert-warning">
+    <span>
+      No hay un candidato configurado. Para pruebas sin login guarda el id en localStorage con la clave
+      <strong>dev_candidate_id</strong>.
+    </span>
+  </div>
+  }
+
+  @if (postulationsResource.isLoading()) {
+  <div class="flex justify-center items-center py-12">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+  }
+
+  @if (hasCandidateId() && postulationsResource.hasValue() && postulations().length > 0) {
+  <div class="overflow-x-auto card bg-base-100 shadow-sm">
+    <table class="table table-zebra">
+      <thead>
+        <tr>
+          <th>ID Postulacion</th>
+          <th>Vacante</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of postulations(); track item.id) {
+        <tr>
+          <td>{{ item.id }}</td>
+          <td>{{ item.vacantId }}</td>
+          <td>{{ item.status }}</td>
+          <td>{{ item.createdAt | date : 'medium' }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+
+  @if (hasCandidateId() && postulationsResource.hasValue() && postulations().length === 0) {
+  <div class="card bg-base-100 shadow-sm">
+    <div class="card-body text-center py-10">
+      <h2 class="text-lg font-semibold">No tienes postulaciones registradas</h2>
+      <p class="text-base-content/60">Cuando te postules a una vacante, aparecera aqui.</p>
+    </div>
+  </div>
+  }
+</div>

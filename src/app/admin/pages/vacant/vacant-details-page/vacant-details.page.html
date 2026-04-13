@@ -1,0 +1,131 @@
+@if (vacantResource.isLoading()) {
+<div class="flex justify-center items-center py-12 w-full">
+	<span class="loading loading-spinner loading-lg"></span>
+</div>
+}
+
+<app-vacant-create-modal
+	#editVacantModal
+	[isEdit]="true"
+	[vacantToEdit]="vacant()"
+	(updated)="onVacantUpdated()"
+></app-vacant-create-modal>
+
+@if (vacantResource.hasValue() && vacant()) {
+<div class="w-full max-w-5xl">
+	<div class="mb-6 flex items-center justify-between gap-3">
+		<div>
+			<h1 class="text-3xl font-bold text-base-content tracking-tight">Detalle de Vacante</h1>
+			<p class="text-base-content/60 mt-1 text-sm">Consulta la información completa de la vacante.</p>
+		</div>
+		<div class="flex items-center gap-2">
+			<button class="btn btn-primary btn-sm" (click)="onOpenEditModal()">Editar</button>
+			<button class="btn btn-error btn-sm" [class.btn-disabled]="isDeleting()" (click)="onDeleteVacant()">
+				@if (isDeleting()) {
+				<span class="loading loading-spinner loading-sm"></span>
+				}
+				Eliminar
+			</button>
+			<a routerLink="/admin/vacants" class="btn btn-outline btn-sm">Volver</a>
+		</div>
+	</div>
+
+	<div class="card bg-base-100 shadow-sm">
+		<div class="card-body p-6 md:p-8">
+			<div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+				<div>
+					<h2 class="text-2xl font-bold text-base-content">{{ vacant()!.title }}</h2>
+					<p class="text-base-content/70 mt-1">{{ vacant()!.profile }}</p>
+				</div>
+				<span
+					[ngClass]="{ 'badge-success': vacant()!.status === 0, 'badge-ghost': vacant()!.status !== 0 }"
+					class="badge badge-sm"
+				>
+					{{ vacant()!.status === 0 ? 'Activa' : 'Inactiva' }}
+				</span>
+			</div>
+
+			<div class="divider"></div>
+
+			<div class="grid gap-5 md:grid-cols-2">
+				<div class="rounded-box bg-base-200/50 p-4">
+					<p class="text-xs uppercase tracking-wider text-base-content/60 font-semibold">Fecha de publicación</p>
+					<p class="text-sm md:text-base text-base-content mt-1">
+						{{ vacant()!.publicationDate | date : "longDate" : "GMT-4" }}
+					</p>
+					<p class="text-sm text-base-content/70">{{ vacant()!.publicationDate | date : "h:mm a" : "GMT-4" }}</p>
+				</div>
+
+				<div class="rounded-box bg-base-200/50 p-4">
+					<p class="text-xs uppercase tracking-wider text-base-content/60 font-semibold">Fecha de contratación</p>
+					<p class="text-sm md:text-base text-base-content mt-1">
+						{{ vacant()!.hiringDate | date : "longDate" : "GMT-4" }}
+					</p>
+					<p class="text-sm text-base-content/70">{{ vacant()!.hiringDate | date : "h:mm a" : "GMT-4" }}</p>
+				</div>
+			</div>
+
+			<div class="mt-6">
+				<p class="text-xs uppercase tracking-wider text-base-content/60 font-semibold mb-2">Descripción</p>
+				<p class="text-sm md:text-base text-base-content whitespace-pre-line">{{ vacant()!.description }}</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- HU-04 y HU-05: Ranking de Candidatos Compatibles -->
+	<div class="card bg-base-100 shadow-sm mt-6">
+		<div class="card-body p-6 md:p-8">
+			<div class="flex justify-between items-center mb-4">
+				<h2 class="text-xl font-bold text-base-content">Ranking de Candidatos Compatibles (IA)</h2>
+				<button class="btn btn-sm btn-outline btn-primary" (click)="loadRanking()">↻ Recalcular Compatibilidad</button>
+			</div>
+			<p class="text-sm text-base-content/70 mb-4">Módulo de Reclutamiento Inteligente (Resultados Mockeados) HU-04 & HU-05.</p>
+
+			@if (isRankingLoading()) {
+				<div class="flex justify-center py-6">
+					<span class="loading loading-spinner text-primary"></span>
+				</div>
+			} @else if (ranking().length > 0) {
+				<div class="overflow-x-auto">
+					<table class="table table-zebra w-full">
+						<thead>
+							<tr>
+								<th>Candidato</th>
+								<th>Años Exp.</th>
+								<th>Habilidades Detectadas (CV)</th>
+								<th>Score Compatibilidad</th>
+								<th>Acción</th>
+							</tr>
+						</thead>
+						<tbody>
+							@for (candidate of ranking(); track candidate.candidateId) {
+								<tr>
+									<td class="font-medium">{{ candidate.candidateName }}</td>
+									<td>{{ candidate.experienceYears }} años</td>
+									<td>
+										<div class="flex flex-wrap gap-1">
+											@for (skill of candidate.extractedSkills; track $index) {
+												<span class="badge badge-sm badge-outline">{{skill}}</span>
+											}
+										</div>
+									</td>
+									<td>
+										<div class="radial-progress text-primary text-sm" [style.--value]="candidate.score" [style.--size]="'3rem'" [style.--thickness]="'4px'">
+											{{candidate.score}}%
+										</div>
+									</td>
+									<td>
+										<button class="btn btn-xs btn-primary">Reclutar</button>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			} @else {
+				<div class="alert alert-info">Aún no hay candidatos postulados a esta vacante para calificar.</div>
+			}
+		</div>
+	</div>
+</div>
+}

@@ -5,21 +5,24 @@ import { NotAuthenticatedGuard } from '@auth/guards/not-authenticated.guard';
 export const routes: Routes = [
   {
     path: 'vacants',
-    loadChildren: () => import('./vacants/vacants.routes')
+    loadChildren: () => import('./vacants/vacants.routes'),
+    // canMatch: [
+    //   NotAuthenticatedGuard
+    // ]
   },
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.routes'),
-    canMatch: [
-      NotAuthenticatedGuard
-    ]
+    // canMatch: [
+    //   NotAuthenticatedGuard
+    // ]
   },
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.routes'),
-    canMatch: [
-      IsAdminGuard
-    ]
+    // canMatch: [
+    //   IsAdminGuard
+    // ]
   },
   {
     path: '**',

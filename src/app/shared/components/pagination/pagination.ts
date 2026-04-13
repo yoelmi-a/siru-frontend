@@ -14,10 +14,12 @@ export class Pagination {
   pageSize = input<number>(10);
   activePage = linkedSignal(this.currentPage);
 
+  previousPage = computed(() => Math.max(1, this.currentPage() - 1));
+  nextPage = computed(() => this.currentPage() + 1);
+
   getActualItemsRange = computed(() => {
-    const currentPageByPageSize = this.activePage() * this.pageSize();
-    var start = this.activePage() === 1 ? 1 : (this.activePage() - 1) * this.pageSize() + 1;
-    var end = Math.min(this.totalCount(), this.activePage() * this.pageSize());
+    const start = this.currentPage() === 1 ? 1 : (this.currentPage() - 1) * this.pageSize() + 1;
+    const end = Math.min(this.totalCount(), this.currentPage() * this.pageSize());
 
     return start === end ? `${start}` : `${start} - ${end}`;
   });

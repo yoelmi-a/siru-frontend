@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { ProblemDetails } from '@auth/interfaces/problem-details.interface';
 import { catchError, map, Observable, of } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../environments/environment.development';
 
 const baseUrl = environment.apiUrl;
 

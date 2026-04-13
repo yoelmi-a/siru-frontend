@@ -1,0 +1,47 @@
+<div class="h-full flex flex-col gap-6 p-4 md:p-6 w-full">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div>
+      <h1 class="text-2xl font-bold">Gestión de Empleados</h1>
+      <p class="text-base-content/70">Módulo MOCKEADO (HU-06 al HU-09) - Mantenimiento del personal</p>
+    </div>
+    <button class="btn btn-primary" (click)="onCreateClicked()">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+      </svg>
+      Nuevo Empleado
+    </button>
+  </div>
+
+  @if (employeesResource.isLoading()) {
+    <div class="flex-1 flex justify-center items-center">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      @for (employee of employees(); track employee.id) {
+        <div class="card bg-base-100 shadow-xl border border-base-200 cursor-pointer hover:shadow-2xl transition-all" (click)="onEmployeeSelected(employee.id)">
+          <div class="card-body">
+            <h2 class="card-title">{{ employee.name }} {{ employee.lastName }}</h2>
+            <div class="text-sm space-y-1">
+              <p><span class="font-semibold">Email:</span> {{ employee.email }}</p>
+              <p><span class="font-semibold">ID:</span> {{ employee.id }}</p>
+              <p><span class="font-semibold">Estado:</span> 
+                <span class="badge badge-sm" [class.badge-success]="employee.status === 'Activo'" [class.badge-error]="employee.status === 'Inactivo'">{{employee.status}}</span>
+              </p>
+            </div>
+            <div class="card-actions justify-end mt-4">
+              <button class="btn btn-primary btn-sm btn-outline">Ver Perfil</button>
+            </div>
+          </div>
+        </div>
+      }
+      @if (employees().length === 0) {
+        <div class="col-span-full">
+          <div class="alert alert-info">No hay empleados registrados.</div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<app-employee-create-modal (saved)="onSaved()"></app-employee-create-modal>

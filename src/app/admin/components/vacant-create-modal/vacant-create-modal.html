@@ -1,0 +1,45 @@
+<dialog #dialog class="modal">
+  <div class="modal-box w-11/12 max-w-2xl">
+    <div class="mb-4">
+      <h3 class="font-bold text-lg">{{ isEdit() ? 'Editar vacante' : 'Nueva vacante' }}</h3>
+      <p class="text-sm text-base-content/60 mt-1">
+        {{ isEdit() ? 'Actualiza la informacion de la vacante.' : 'Completa la informacion para registrar una nueva vacante.' }}
+      </p>
+    </div>
+
+    @if (errorMessage()) {
+    <div role="alert" class="alert alert-error mb-4">
+      <span>{{ errorMessage() }}</span>
+    </div>
+    }
+
+    <form [formGroup]="createVacantForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <section>
+        <label class="label pb-1 text-sm font-semibold" for="title">Titulo<span class="text-error">*</span></label>
+        <input id="title" type="text" class="input input-bordered w-full" formControlName="title" placeholder="Ej: Desarrollador Frontend" />
+        <form-error-label [control]="createVacantForm.get('title')!" />
+      </section>
+
+      <section>
+        <label class="label pb-1 text-sm font-semibold" for="profile">Perfil<span class="text-error">*</span></label>
+        <input id="profile" type="text" class="input input-bordered w-full" formControlName="profile" placeholder="Ej: Angular, TypeScript, APIs REST" />
+        <form-error-label [control]="createVacantForm.get('profile')!" />
+      </section>
+
+      <section>
+        <label class="label pb-1 text-sm font-semibold" for="description">Descripcion<span class="text-error">*</span></label>
+        <textarea id="description" class="textarea textarea-bordered w-full min-h-28" formControlName="description" placeholder="Describe responsabilidades y requisitos."></textarea>
+        <form-error-label [control]="createVacantForm.get('description')!" />
+      </section>
+
+      <div class="modal-action mt-6">
+        <app-button variant="ghost" (pressed)="onCancel()">Cancelar</app-button>
+        <app-button type="submit" variant="primary" [loading]="isPosting()">
+          {{ isEdit() ? 'Actualizar vacante' : 'Guardar vacante' }}
+        </app-button>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop" (click)="onCancel()"></div>
+</dialog>

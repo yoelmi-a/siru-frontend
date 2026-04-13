@@ -1,11 +1,11 @@
-import { environment } from "src/environments/environment";
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { User } from "../interfaces/user.interface";
 import { HttpClient } from "@angular/common/http";
-import { catchError, delay, map, Observable, of, tap } from "rxjs";
+import { catchError, map, Observable, of, tap } from "rxjs";
 import { ProblemDetails } from "../interfaces/problem-details.interface";
 import { jwtDecode } from "jwt-decode";
 import { JwtPayload } from "@auth/interfaces/jwt-payload.interface";
+import { environment } from '../../../environments/environment.development';
 
 const baseUrl = environment.apiUrl;
 

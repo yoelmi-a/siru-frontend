@@ -1,3 +1,16 @@
 <!-- DONE: Crear componentes separados para el header y positions -->
 <vacants-header [header]=header() />
-<vacants-card [positions]=cards() />
+
+@if (vacantsResource.isLoading()) {
+<div class="flex justify-center items-center py-12">
+  <span class="loading loading-spinner loading-lg"></span>
+</div>
+}
+
+@if (applyFeedback()) {
+<div [ngClass]="{'alert-error': applyFeedback()?.includes('No se pudo'), 'alert-success': applyFeedback()?.includes('correctamente'), 'alert-info': true}" class="alert my-4">
+  <span>{{ applyFeedback() }}</span>
+</div>
+}
+
+<app-vacants-card [positions]=cards() (applyPressed)="onApply($event)"></app-vacants-card>

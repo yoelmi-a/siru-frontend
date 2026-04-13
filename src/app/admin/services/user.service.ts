@@ -3,8 +3,8 @@ import { User } from '@admin/interfaces/user.interface';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { PaginatedResponse } from '@shared/interfaces/paginated-response.interface';
-import { delay, map, Observable, of, tap } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { map, Observable, of, tap } from 'rxjs';
+import { environment } from '../../../environments/environment.development';
 
 const baseUrl = environment.apiUrl;
 
