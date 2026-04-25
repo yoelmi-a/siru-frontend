@@ -1,0 +1,111 @@
+<div class="container mx-auto p-4 py-8">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-base-content">Employees</h1>
+      <p class="text-base-content/70 mt-1">Manage your workforce, history and evaluations.</p>
+    </div>
+    <a routerLink="new" class="btn btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+      Register Employee
+    </a>
+  </div>
+
+  <!-- Filters Tabs -->
+  <div class="tabs tabs-boxed mb-6 bg-base-100 border border-base-200">
+    <button class="tab" [class.tab-active]="activeFilter() === null" (click)="setFilter(null)">All</button>
+    <button class="tab" [class.tab-active]="activeFilter() === true" (click)="setFilter(true)">Active</button>
+    <button class="tab" [class.tab-active]="activeFilter() === false" (click)="setFilter(false)">Inactive</button>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center items-center h-64">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else {
+    <div class="overflow-x-auto bg-base-100 rounded-box shadow-xl border border-base-200">
+      <table class="table table-zebra w-full">
+        <thead class="bg-base-200">
+          <tr>
+            <th class="text-base font-bold">Full Name</th>
+            <th class="text-base font-bold">Cedula</th>
+            <th class="text-base font-bold">Phone</th>
+            <th class="text-base font-bold text-center">Status</th>
+            <th class="text-base font-bold text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (emp of employees(); track emp.id) {
+            <tr class="hover">
+              <td>
+                <div class="font-medium">{{ emp.fullName }}</div>
+              </td>
+              <td>{{ emp.cedula }}</td>
+              <td>{{ emp.phoneNumber }}</td>
+              <td class="text-center">
+                <div class="badge" [class.badge-success]="emp.isActive" [class.badge-neutral]="!emp.isActive">
+                  {{ emp.isActive ? 'Active' : 'Inactive' }}
+                </div>
+              </td>
+              <td class="text-right">
+                <div class="flex justify-end gap-1">
+                  <a [routerLink]="[emp.id]" class="btn btn-xs btn-ghost text-info" title="View Details">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </a>
+                  <a [routerLink]="[emp.id, 'edit']" class="btn btn-xs btn-ghost text-warning" title="Edit">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                    </svg>
+                  </a>
+                  @if (emp.isActive) {
+                    <button class="btn btn-xs btn-ghost text-error" (click)="confirmDeactivate(emp)" title="Deactivate">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M22 10.5h-6m-2.25-1.5a4.875 4.875 0 10-8.535 4.579m6.474-3.332A4.875 4.875 0 0010.036 11.5m4.575-3.1a4.875 4.875 0 10-8.535 4.579m6.474-3.332A4.875 4.875 0 0010.036 11.5M12 14v7m-3-3l3 3 3-3" />
+                      </svg>
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="text-center p-12 text-base-content/60">
+                <div class="flex flex-col items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 opacity-20">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                  <span>No employees found matching the filter.</span>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalCount() > 0) {
+      <div class="mt-6">
+        <pagination
+          [currentPage]="currentPage()"
+          [hasPreviousPage]="hasPreviousPage()"
+          [hasNextPage]="hasNextPage()"
+          [totalCount]="totalCount()"
+          (pageChange)="loadEmployees($event)" 
+        />
+      </div>
+    }
+  }
+</div>
+
+@if (employeeToDelete(); as emp) {
+  <app-confirm-dialog
+    title="Deactivate Employee"
+    [message]="'Are you sure you want to deactivate ' + emp.fullName + '? This will mark them as inactive in the system.'"
+    (confirm)="onDeactivate()"
+    (cancel)="employeeToDelete.set(null)"
+  />
+}

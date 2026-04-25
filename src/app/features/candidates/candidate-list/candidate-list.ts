@@ -1,5 +1,5 @@
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { ApiService } from '@core/services/api.service';
@@ -17,6 +17,7 @@ export class CandidateListComponent implements OnInit {
   private api = inject(ApiService);
   private toast = inject(ToastService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   readonly pageSize = 10;
 
@@ -57,6 +58,14 @@ export class CandidateListComponent implements OnInit {
         this.toast.error('Failed to load candidates');
         this.loading.set(false);
       }
+    });
+  }
+
+  onPageChange(page: number) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page },
+      queryParamsHandling: 'merge'
     });
   }
 

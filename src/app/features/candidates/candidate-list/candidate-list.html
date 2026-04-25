@@ -45,6 +45,7 @@
       [hasNextPage]="hasNextPage()"
       [totalCount]="totalCount()"
       [pageSize]="pageSize"
+      (pageChange)="onPageChange($event)"
     />
   }
 }

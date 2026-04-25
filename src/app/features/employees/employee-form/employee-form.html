@@ -1,0 +1,98 @@
+<div class="container mx-auto p-4 max-w-2xl py-8">
+  <div class="mb-6">
+    <a routerLink="/employees" class="btn btn-ghost btn-sm">
+      &larr; Back to Employees
+    </a>
+  </div>
+
+  <div class="card bg-base-100 shadow-xl border border-base-200">
+    <div class="card-body">
+      <h1 class="card-title text-2xl font-bold mb-1">
+        {{ employeeId() ? 'Edit Employee' : 'Register Employee' }}
+      </h1>
+      <p class="text-sm text-base-content/70 mb-8">
+        {{ employeeId() ? 'Update the information for this employee.' : 'Enter the details of the new employee to register them in the system.' }}
+      </p>
+
+      @if (loading()) {
+        <div class="flex justify-center p-12">
+          <span class="loading loading-spinner loading-lg text-primary"></span>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium text-base-content/80">First Name <span class="text-error">*</span></span>
+              </label>
+              <input type="text" formControlName="firstName" class="input input-bordered w-full" placeholder="John" />
+              <form-error-label [control]="form.get('firstName')!" />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium text-base-content/80">Last Name <span class="text-error">*</span></span>
+              </label>
+              <input type="text" formControlName="lastName" class="input input-bordered w-full" placeholder="Doe" />
+              <form-error-label [control]="form.get('lastName')!" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium text-base-content/80">Cedula <span class="text-error">*</span></span>
+              </label>
+              <input type="text" formControlName="cedula" class="input input-bordered w-full" placeholder="001-0000000-0" />
+              <form-error-label [control]="form.get('cedula')!" />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium text-base-content/80">Date of Birth <span class="text-error">*</span></span>
+              </label>
+              <input type="date" formControlName="dateOfBirth" class="input input-bordered w-full" />
+              <form-error-label [control]="form.get('dateOfBirth')!" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium text-base-content/80">Email <span class="text-error">*</span></span>
+              </label>
+              <input type="email" formControlName="email" class="input input-bordered w-full" placeholder="john.doe@example.com" />
+              <form-error-label [control]="form.get('email')!" />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium text-base-content/80">Phone Number <span class="text-error">*</span></span>
+              </label>
+              <input type="tel" formControlName="phoneNumber" class="input input-bordered w-full" placeholder="+1 809 000 0000" />
+              <form-error-label [control]="form.get('phoneNumber')!" />
+            </div>
+          </div>
+
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium text-base-content/80">Address <span class="text-error">*</span></span>
+            </label>
+            <textarea formControlName="address" class="textarea textarea-bordered h-24 w-full" placeholder="Full residential address..."></textarea>
+            <form-error-label [control]="form.get('address')!" />
+          </div>
+
+          <div class="card-actions justify-end mt-8 pt-4 border-t border-base-200">
+            <a routerLink="/employees" class="btn btn-ghost">Cancel</a>
+            <button type="submit" class="btn btn-primary" [disabled]="isSubmitting()">
+              @if (isSubmitting()) {
+                <span class="loading loading-spinner loading-sm"></span>
+              }
+              {{ employeeId() ? 'Save Changes' : 'Register Employee' }}
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+</div>

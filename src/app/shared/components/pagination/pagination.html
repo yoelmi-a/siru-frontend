@@ -5,8 +5,8 @@
       class="font-medium text-base-content">{{ totalCount() }}</span> resultados
   </p>
   <div class="join order-1 sm:order-2">
-    <button [class.btn-disabled]="!hasPreviousPage()" [routerLink]="[]" [queryParams]="{ page: --activePage }" class="join-item btn btn-sm">«</button>
-    <button class="join-item btn btn-sm">Página {{ currentPage() }}</button>
-    <button [class.btn-disabled]="!hasNextPage()" [routerLink]="[]" [queryParams]="{ page: ++activePage }" class="join-item btn btn-sm">»</button>
+    <button [disabled]="!hasPreviousPage()" (click)="onPageChange(currentPage() - 1)" class="join-item btn btn-sm">«</button>
+    <button class="join-item btn btn-sm btn-active">Página {{ currentPage() }}</button>
+    <button [disabled]="!hasNextPage()" (click)="onPageChange(currentPage() + 1)" class="join-item btn btn-sm">»</button>
   </div>
 </div>

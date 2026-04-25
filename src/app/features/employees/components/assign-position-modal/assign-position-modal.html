@@ -1,0 +1,40 @@
+<dialog class="modal modal-open">
+  <div class="modal-box max-w-md">
+    <h3 class="font-bold text-lg mb-1">Assign New Position</h3>
+    <p class="text-sm text-base-content/70 mb-6">Select a position and the start date for the employee.</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div class="form-control w-full">
+        <label class="label">
+          <span class="label-text font-medium">Position <span class="text-error">*</span></span>
+        </label>
+        <select formControlName="positionId" class="select select-bordered w-full">
+          <option value="" disabled selected>Select a position...</option>
+          @for (pos of positions(); track pos.id) {
+            <option [value]="pos.id">{{ pos.name }} ({{ pos.departmentName }})</option>
+          }
+        </select>
+        <form-error-label [control]="form.get('positionId')!" />
+      </div>
+
+      <div class="form-control w-full">
+        <label class="label">
+          <span class="label-text font-medium">Start Date <span class="text-error">*</span></span>
+        </label>
+        <input type="date" formControlName="startDate" class="input input-bordered w-full" />
+        <form-error-label [control]="form.get('startDate')!" />
+      </div>
+
+      <div class="modal-action mt-8">
+        <button type="button" class="btn btn-ghost" (click)="closed.emit()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="isSubmitting()">
+          @if (isSubmitting()) {
+            <span class="loading loading-spinner loading-sm"></span>
+          }
+          Assign Position
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="modal-backdrop" (click)="closed.emit()"></div>
+</dialog>

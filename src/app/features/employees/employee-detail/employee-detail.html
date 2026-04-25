@@ -1,0 +1,146 @@
+<div class="container mx-auto p-4 py-8 max-w-5xl">
+  <div class="mb-6 flex justify-between items-center">
+    <a routerLink="/employees" class="btn btn-ghost btn-sm">
+      &larr; Back to Employees
+    </a>
+    @if (employee(); as emp) {
+      <a [routerLink]="['/employees', emp.id, 'edit']" class="btn btn-outline btn-sm">
+        Edit Profile
+      </a>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center items-center h-64">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else if (employee(); as emp) {
+    <!-- Profile Header -->
+    <div class="card bg-base-100 shadow-xl border border-base-200 mb-8">
+      <div class="card-body">
+        <div class="flex flex-col md:flex-row gap-6 items-start">
+          <div class="avatar placeholder">
+            <div class="bg-neutral text-neutral-content rounded-full w-24">
+              <span class="text-3xl font-bold">{{ emp.firstName[0] }}{{ emp.lastName[0] }}</span>
+            </div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-1">
+              <h1 class="text-3xl font-bold">{{ emp.firstName }} {{ emp.lastName }}</h1>
+              <div class="badge" [class.badge-success]="emp.isActive" [class.badge-neutral]="!emp.isActive">
+                {{ emp.isActive ? 'Active' : 'Inactive' }}
+              </div>
+            </div>
+            <p class="text-base-content/60 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
+              </svg>
+              Cedula: {{ emp.cedula }}
+            </p>
+          </div>
+          <div class="flex flex-col gap-2">
+            <button class="btn btn-primary" (click)="showAssignModal.set(true)">
+              Assign Position
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 pt-8 border-t border-base-200">
+          <div>
+            <span class="text-xs font-bold uppercase text-base-content/50 block mb-1">Contact</span>
+            <p class="font-medium">{{ emp.email || 'No email' }}</p>
+            <p class="text-sm opacity-70">{{ emp.phoneNumber }}</p>
+          </div>
+          <div>
+            <span class="text-xs font-bold uppercase text-base-content/50 block mb-1">Birth Date</span>
+            <p class="font-medium">{{ emp.dateOfBirth | date:'longDate' }}</p>
+          </div>
+          <div>
+            <span class="text-xs font-bold uppercase text-base-content/50 block mb-1">Address</span>
+            <p class="text-sm">{{ emp.address }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs Container -->
+    <div class="card bg-base-100 shadow-xl border border-base-200">
+      <div class="tabs tabs-lifted w-full">
+        <button class="tab tab-lg flex-1" [class.tab-active]="activeTab() === 'history'" (click)="activeTab.set('history')">
+          Work History
+        </button>
+        <button class="tab tab-lg flex-1" [class.tab-active]="activeTab() === 'evaluations'" (click)="activeTab.set('evaluations')">
+          Evaluations
+        </button>
+      </div>
+
+      <div class="p-6 bg-base-100 border-x border-b border-base-200 rounded-b-box">
+        @if (activeTab() === 'history') {
+          <ul class="timeline timeline-vertical timeline-compact">
+            @for (h of history(); track $index; let last = $last) {
+              <li>
+                @if ($index > 0) { <hr /> }
+                <div class="timeline-middle text-primary">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="timeline-end mb-10 pl-4">
+                  <time class="font-mono italic text-sm text-base-content/60">
+                    {{ h.startDate | date:'MMM yyyy' }} &mdash; {{ h.endDate ? (h.endDate | date:'MMM yyyy') : 'Present' }}
+                  </time>
+                  <div class="text-lg font-black text-primary">{{ h.positionName }}</div>
+                  <div class="font-bold opacity-70">{{ h.departmentName }}</div>
+                </div>
+                @if (!last) { <hr /> }
+              </li>
+            } @empty {
+              <div class="text-center p-8 opacity-50">No work history found.</div>
+            }
+          </ul>
+        } @else {
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @for (ev of evaluations(); track ev.id) {
+              <div class="card bg-base-200 border border-base-300">
+                <div class="card-body">
+                  <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-bold text-lg">{{ ev.positionName }}</h3>
+                    <div class="badge" [class]="getScoreClass(ev.averageScore)">
+                      Score: {{ ev.averageScore | number:'1.1-1' }}
+                    </div>
+                  </div>
+                  <time class="text-xs opacity-60 block mb-4">{{ ev.date | date:'mediumDate' }}</time>
+                  
+                  <div class="space-y-3">
+                    @for (crit of ev.criteria; track crit.name) {
+                      <div>
+                        <div class="flex justify-between text-xs mb-1">
+                          <span>{{ crit.name }}</span>
+                          <span class="font-bold">{{ crit.score }}</span>
+                        </div>
+                        <progress class="progress progress-primary w-full" [value]="crit.score" max="5"></progress>
+                        @if (crit.observation) {
+                          <p class="text-[10px] italic opacity-70 mt-1">"{{ crit.observation }}"</p>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            } @empty {
+              <div class="col-span-2 text-center p-8 opacity-50">No evaluations found yet.</div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+@if (showAssignModal() && employee(); as emp) {
+  <app-assign-position-modal
+    [employeeId]="emp.id"
+    (assigned)="reloadHistory()"
+    (closed)="showAssignModal.set(false)"
+  />
+}

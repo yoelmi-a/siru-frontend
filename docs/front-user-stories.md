@@ -244,30 +244,30 @@ This document contains the user story backlog for the SIRUS Angular SPA. Stories
 
 **Acceptance Criteria:**
 
-- [ ] Route: `GET /employees`
-- [ ] Requires `AdminGuard`
-- [ ] `GET /api/employees?page=1&pageSize=10&isActive=true|false|null` for paginated list
-- [ ] daisyUI table: Full Name, Cedula, Phone, Status badge, Actions
-- [ ] Filter tabs: All / Active / Inactive
-- [ ] Pagination controls (page, pageSize)
-- [ ] "Register Employee" button → `/employees/new`
-- [ ] "Edit" button → `/employees/:id/edit`
-- [ ] "View" button → `/employees/:id` (detail page)
-- [ ] Employee detail page (`/employees/:id`):
-  - Shows all `EmployeeDto` fields
-  - Tabs: "Work History" and "Evaluations"
-  - Work History tab: `GET /api/employees/:id/history` displayed as timeline list
-  - Evaluations tab: `GET /api/employees/:id/evaluations` displayed as evaluation cards with score badges
-  - "Assign Position" button opens modal form
-    - Dropdown: position (from `GET /api/positions`)
-    - Start date picker
-    - `POST /api/employees/:id/positions`
-- [ ] Employee form (`/employees/new`, `/employees/:id/edit`):
-  - Fields: firstName, lastName, address, cedula, phoneNumber, dateOfBirth, email
-  - `POST /api/employees` / `PUT /api/employees/:id`
-  - Validation errors per field
-- [ ] "Deactivate" button (delete): `DELETE /api/employees/:id` (soft delete, sets `IsActive = false`)
-- [ ] Uses `MainLayoutComponent`
+- [x] Route: `GET /employees`
+- [x] Requires `AdminGuard`
+- [x] `GET /api/employees?page=1&pageSize=10&isActive=true|false|null` for paginated list
+- [x] daisyUI table: Full Name, Cedula, Phone, Status badge, Actions
+- [x] Filter tabs: All / Active / Inactive
+- [x] Pagination controls (page, pageSize)
+- [x] "Register Employee" button → `/employees/new`
+- [x] "Edit" button → `/employees/:id/edit`
+- [x] "View" button → `/employees/:id` (detail page)
+- [x] Employee detail page (`/employees/:id`):
+  - [x] Shows all `EmployeeDto` fields
+  - [x] Tabs: "Work History" and "Evaluations"
+  - [x] Work History tab: `GET /api/employees/:id/history` displayed as timeline list
+  - [x] Evaluations tab: `GET /api/employees/:id/evaluations` displayed as evaluation cards with score badges
+  - [x] "Assign Position" button opens modal form
+    - [x] Dropdown: position (from `GET /api/positions`)
+    - [x] Start date picker
+    - [x] `POST /api/employees/:id/positions`
+- [x] Employee form (`/employees/new`, `/employees/:id/edit`):
+  - [x] Fields: firstName, lastName, address, cedula, phoneNumber, dateOfBirth, email
+  - [x] `POST /api/employees` / `PUT /api/employees/:id`
+  - [x] Validation errors per field
+- [x] "Deactivate" button (delete): `DELETE /api/employees/:id` (soft delete, sets `IsActive = false`)
+- [x] Uses `MainLayoutComponent`
 
 **Linked Requirements:** `api-reference.md` Section 3.3, `EmployeeDto`, `EmployeeListDto`, `EmployeeHistoryDto`, `EmployeePositionDto`, `EvaluationHistoryDto`
 

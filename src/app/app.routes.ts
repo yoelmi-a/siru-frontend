@@ -37,6 +37,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/candidates/candidates.routes')
       },
       {
+        path: 'employees',
+        loadChildren: () => import('./features/employees/employees.routes')
+      },
+      {
         path: 'auth/me/sessions',
         component: MySessionsComponent
       }
