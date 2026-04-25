@@ -16,10 +16,6 @@ export const routes: Routes = [
     loadChildren: () => import('./auth/auth.routes')
   },
   {
-    path: 'positions',
-    loadChildren: () => import('./features/positions/positions.routes')
-  },
-  {
     path: '',
     component: MainLayout,
     canActivate: [authGuard],
@@ -50,6 +46,11 @@ export const routes: Routes = [
         path: 'evaluations',
         loadChildren: () => import('./features/evaluations/evaluations.routes'),
         canActivate: [supervisorGuard]
+      },
+      {
+        path: 'positions',
+        loadChildren: () => import('./features/positions/positions.routes'),
+        canActivate: [adminGuard]
       },
       {
         path: 'auth/me/sessions',
