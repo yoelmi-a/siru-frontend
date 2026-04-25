@@ -25,7 +25,7 @@
               <th>Full Name</th>
               <th>Status</th>
               <th>Score</th>
-              <th>CV</th>
+              <th class="text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -34,8 +34,9 @@
                 <td>{{ app.candidateFullName }}</td>
                 <td>
                   <div class="badge"
-                       [class.badge-success]="app.status === 'Approved'"
                        [class.badge-neutral]="app.status === 'Pending'"
+                       [class.badge-info]="app.status === 'EvaluationProcess'"
+                       [class.badge-success]="app.status === 'Hired'"
                        [class.badge-error]="app.status === 'Rejected'">
                     {{ app.status }}
                   </div>
@@ -45,10 +46,33 @@
                     {{ app.score * 100 | number:'1.0-0' }}%
                   </div>
                 </td>
-                <td>
+                <td class="flex justify-end gap-2">
                   <a [href]="app.cvUrl" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-ghost">
-                    View CV
+                    CV
                   </a>
+                  
+                  @if (app.status === 'Pending') {
+                    <button class="btn btn-xs btn-primary" 
+                            [disabled]="isUpdatingStatus() === app.applicationId"
+                            (click)="changeStatus(app.applicationId, 'EvaluationProcess')">
+                      Evaluate
+                    </button>
+                  } @else if (app.status === 'EvaluationProcess') {
+                    <button class="btn btn-xs btn-success"
+                            [disabled]="isUpdatingStatus() === app.applicationId"
+                            (click)="changeStatus(app.applicationId, 'Hired')">
+                      Hire
+                    </button>
+                    <button class="btn btn-xs btn-error"
+                            [disabled]="isUpdatingStatus() === app.applicationId"
+                            (click)="changeStatus(app.applicationId, 'Rejected')">
+                      Reject
+                    </button>
+                  }
+
+                  @if (isUpdatingStatus() === app.applicationId) {
+                    <span class="loading loading-spinner loading-xs"></span>
+                  }
                 </td>
               </tr>
             } @empty {

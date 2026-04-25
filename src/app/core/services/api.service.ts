@@ -26,11 +26,17 @@ import {
   SaveAccountDto, EditAccountDto, ChangeStatusDto, RefreshRequest
 } from '../models/auth.models';
 
+export type CandidateStatus =
+  | 'Pending'
+  | 'EvaluationProcess'
+  | 'Hired'
+  | 'Rejected';
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
-  private authUrl = environment.authUrl;
+  private authUrl = environment.authUrl; 
 
   private getPaginationParams(page?: number, pageSize?: number): HttpParams {
     let params = new HttpParams();
@@ -87,6 +93,13 @@ export class ApiService {
       { params: httpParams }
     );
   }
+
+  setApplicationStatus(applicationId: string, newStatus: CandidateStatus): Observable<void> {
+  return this.http.put<void>(
+    `${this.baseUrl}/Vacants/applications/${applicationId}?newStatus=${newStatus}`,
+    {}
+  );
+}
 
 // ============================================================
 // CANDIDATES

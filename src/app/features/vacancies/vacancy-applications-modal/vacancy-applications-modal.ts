@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { ApiService } from '@core/services/api.service';
+import { ApiService, CandidateStatus } from '@core/services/api.service';
 import { ToastService } from '@core/services/toast.service';
 import { VacancyApplicationResultDto } from '@core/models/vacancy.models';
 
@@ -20,6 +20,7 @@ export class VacancyApplicationsModalComponent implements OnInit {
   applications = signal<VacancyApplicationResultDto[]>([]);
   loading = signal(false);
   isRecalculating = signal(false);
+  isUpdatingStatus = signal<string | null>(null);
   currentPage = signal(1);
   totalCount = signal(0);
   readonly pageSize = 10;
@@ -76,6 +77,21 @@ export class VacancyApplicationsModalComponent implements OnInit {
       error: () => {
         this.toast.error('Failed to recalculate scores');
         this.isRecalculating.set(false);
+      }
+    });
+  }
+
+  changeStatus(applicationId: string, newStatus: CandidateStatus) {
+    this.isUpdatingStatus.set(applicationId);
+    this.api.setApplicationStatus(applicationId, newStatus).subscribe({
+      next: () => {
+        this.toast.success(`Status updated to ${newStatus}`);
+        this.loadApplications(this.currentPage());
+        this.isUpdatingStatus.set(null);
+      },
+      error: (err) => {
+        this.toast.error(err.error?.detail || 'Failed to update status');
+        this.isUpdatingStatus.set(null);
       }
     });
   }
