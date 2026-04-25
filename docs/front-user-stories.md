@@ -364,22 +364,22 @@ This document contains the user story backlog for the SIRUS Angular SPA. Stories
 
 **Acceptance Criteria:**
 
-- [ ] Route: `GET /evaluations/create`
-- [ ] Requires `SupervisorGuard` (Supervisor or Admin)
-- [ ] Form fields:
-  - Employee (searchable dropdown — `GET /api/employees` filtered by active)
-  - Evaluation date (date picker)
-  - Criteria entries (dynamic list):
-    - Each entry: criterion (dropdown from `GET /api/evaluation-criteria`), score (number 0.0–5.0), observation (optional text)
-    - "Add criterion" button to add more rows
-    - At least one criterion required
-    - Score validation: must be between 0.0 and 5.0
-  - Score preview: show computed average as user enters scores
-- [ ] `POST /api/evaluations` with `EvaluationInsertDto`
-- [ ] On `201`: show success toast with "Evaluation created successfully!", redirect to history
-- [ ] On `400`: show validation errors
-- [ ] On `404`: show "Employee not found" toast
-- [ ] Uses `MainLayoutComponent`
+- [x] Route: `GET /evaluations/create`
+- [x] Requires `SupervisorGuard` (Supervisor or Admin)
+- [x] Form fields:
+  - [x] Employee (searchable dropdown — `GET /api/employees` filtered by active)
+  - [x] Evaluation date (date picker)
+  - [x] Criteria entries (dynamic list):
+    - [x] Each entry: criterion (dropdown from `GET /api/evaluation-criteria`), score (number 0.0–5.0), observation (optional text)
+    - [x] "Add criterion" button to add more rows
+    - [x] At least one criterion required
+    - [x] Score validation: must be between 0.0 and 5.0
+  - [x] Score preview: show computed average as user enters scores
+- [x] `POST /api/evaluations` with `EvaluationInsertDto`
+- [x] On `201`: show success toast with "Evaluation created successfully!", redirect to history
+- [x] On `400`: show validation errors
+- [x] On `404`: show "Employee not found" toast
+- [x] Uses `MainLayoutComponent`
 
 **Linked Requirements:** `api-reference.md` Section 3.6, `EvaluationInsertDto`, `EvaluationDto`
 
@@ -397,14 +397,14 @@ This document contains the user story backlog for the SIRUS Angular SPA. Stories
 
 **Acceptance Criteria:**
 
-- [ ] Route: `GET /evaluations/history`
-- [ ] Requires `SupervisorGuard`
-- [ ] Employee selector (dropdown from `GET /api/employees` filtered by active)
-- [ ] On employee selection: `GET /api/employees/:id/evaluations`
-- [ ] Evaluations displayed as cards in reverse chronological order
-- [ ] Each card shows: date, average score badge, position name, criteria breakdown
-- [ ] Criteria shown as list: name, score (0.0–5.0 with color badge), observation text
-- [ ] Uses `MainLayoutComponent`
+- [x] Route: `GET /evaluations/history`
+- [x] Requires `SupervisorGuard`
+- [x] Employee selector (dropdown from `GET /api/employees` filtered by active)
+- [x] On employee selection: `GET /api/employees/:id/evaluations`
+- [x] Evaluations displayed as cards in reverse chronological order
+- [x] Each card shows: date, average score badge, position name, criteria breakdown
+- [x] Criteria shown as list: name, score (0.0–5.0 with color badge), observation text
+- [x] Uses `MainLayoutComponent`
 
 **Linked Requirements:** `api-reference.md` Section 3.3 (GET /api/employees/:id/evaluations), `EvaluationHistoryDto`
 

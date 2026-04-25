@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/guards/auth.guard';
 import { adminGuard } from '@core/guards/admin.guard';
+import { supervisorGuard } from '@core/guards/supervisor.guard';
 import { MainLayout } from '@layouts/main-layout/main-layout';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { MySessionsComponent } from './features/auth/my-sessions.component';
@@ -44,6 +45,11 @@ export const routes: Routes = [
         path: 'evaluation-criteria',
         loadChildren: () => import('./features/evaluation-criteria/evaluation-criteria.routes'),
         canActivate: [adminGuard]
+      },
+      {
+        path: 'evaluations',
+        loadChildren: () => import('./features/evaluations/evaluations.routes'),
+        canActivate: [supervisorGuard]
       },
       {
         path: 'auth/me/sessions',

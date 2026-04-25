@@ -1,0 +1,145 @@
+<div class="container mx-auto p-4 py-8 max-w-4xl">
+  <div class="mb-6 flex justify-between items-center">
+    <div>
+      <h1 class="text-3xl font-bold text-base-content">New Evaluation</h1>
+      <p class="text-base-content/70 mt-1">Register a performance evaluation for an employee.</p>
+    </div>
+    <a routerLink="/evaluations/history" class="btn btn-ghost">
+      View History
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center p-12">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+      
+      <!-- Employee & Date Section -->
+      <div class="card bg-base-100 shadow-xl border border-base-200">
+        <div class="card-body">
+          <h2 class="card-title text-lg mb-4">Evaluation Details</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium text-base-content/80">Employee <span class="text-error">*</span></span>
+              </label>
+              <select formControlName="employeeId" class="select select-bordered w-full">
+                <option value="" disabled selected>Select an active employee...</option>
+                @for (emp of employees(); track emp.id) {
+                  <option [value]="emp.id">{{ emp.fullName }} ({{ emp.cedula }})</option>
+                }
+              </select>
+              <form-error-label [control]="form.get('employeeId')!" />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label">
+                <span class="label-text font-medium text-base-content/80">Evaluation Date <span class="text-error">*</span></span>
+              </label>
+              <input type="date" formControlName="evaluationDate" class="input input-bordered w-full" />
+              <form-error-label [control]="form.get('evaluationDate')!" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Criteria Section -->
+      <div class="card bg-base-100 shadow-xl border border-base-200"> 
+        <div class="card-body">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="card-title text-lg">Performance Criteria</h2>
+            <div class="text-right">
+              <span class="text-sm text-base-content/60 uppercase font-bold tracking-wider">Average Score</span>
+              <div class="text-3xl font-black mt-1" [class]="getScoreClass(averageScore())">
+                {{ averageScore() | number:'1.1-2' }} <span class="text-base font-medium opacity-50">/ 5</span>
+              </div>
+            </div>
+          </div>
+          
+          @if (hasDuplicateCriteria()) {
+            <div class="alert alert-error shadow-sm py-2 px-4 mb-6 flex gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+              <span class="text-sm font-medium">You have selected the same criterion more than once. Please remove or change the duplicates.</span>
+            </div>
+          }
+
+          <div formArrayName="criteria" class="space-y-4">
+            @for (critGroup of criteriaFormArray.controls; track $index) {
+              <div [formGroupName]="$index" class="p-4 bg-base-200 rounded-box border border-base-300 relative group">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                  <!-- Criterion Selector -->
+                  <div class="form-control md:col-span-5">
+                    <label class="label hidden md:flex" *ngIf="$index === 0">
+                      <span class="label-text text-xs uppercase font-bold text-base-content/60">Criterion</span>
+                    </label>
+                    <select formControlName="criterionId" class="select select-bordered w-full select-sm">
+                      <option value="" disabled selected>Select criterion...</option>
+                      @for (c of criteriaOptions(); track c.id) {
+                        <option [value]="c.id" [disabled]="isCriterionDisabled(c.id, $index)">{{ c.name }}</option>
+                      }
+                    </select>
+                    <form-error-label [control]="critGroup.get('criterionId')!" />
+                  </div>
+
+                  <!-- Score Input -->
+                  <div class="form-control md:col-span-2">
+                    <label class="label hidden md:flex" *ngIf="$index === 0">
+                      <span class="label-text text-xs uppercase font-bold text-base-content/60">Score (0-5)</span>
+                    </label>
+                    <input type="number" step="0.1" min="0" max="5" formControlName="score" class="input input-bordered w-full input-sm" placeholder="Score" />
+                    <form-error-label [control]="critGroup.get('score')!" />
+                  </div>
+
+                  <!-- Observation Input -->
+                  <div class="form-control md:col-span-4">
+                    <label class="label hidden md:flex" *ngIf="$index === 0">
+                      <span class="label-text text-xs uppercase font-bold text-base-content/60">Observation (Optional)</span>
+                    </label>
+                    <input type="text" formControlName="observation" class="input input-bordered w-full input-sm" placeholder="Observation..." />
+                  </div>
+
+                  <!-- Remove Button -->
+                  <div class="md:col-span-1 flex items-end justify-center md:pb-1">
+                    <button type="button" class="btn btn-ghost btn-sm text-error opacity-50 hover:opacity-100" (click)="removeCriterionRow($index)" title="Remove Row">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            } @empty {
+              <div class="text-center p-8 border-2 border-dashed border-base-300 rounded-box opacity-60">
+                No criteria added yet.
+              </div>
+            }
+          </div>
+
+          <div class="mt-4">
+            <button type="button" class="btn btn-outline btn-sm btn-primary" (click)="addCriterionRow()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Add Criterion Row
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Section -->
+      <div class="flex justify-end gap-4 mt-8">
+        <a routerLink="/evaluations/history" class="btn btn-ghost">Cancel</a>
+        <button type="submit" class="btn btn-primary" [disabled]="isSubmitting() || criteriaFormArray.length === 0">
+          @if (isSubmitting()) {
+            <span class="loading loading-spinner loading-sm"></span>
+          }
+          Submit Evaluation
+        </button>
+      </div>
+    </form>
+  }
+</div>
