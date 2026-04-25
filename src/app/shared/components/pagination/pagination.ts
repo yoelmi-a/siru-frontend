@@ -1,10 +1,8 @@
 import { Component, computed, input, output } from '@angular/core';
-import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'pagination',
   standalone: true,
-  imports: [RouterLink],
   templateUrl: './pagination.html',
 })
 export class Pagination {

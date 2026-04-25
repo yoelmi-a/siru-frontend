@@ -331,18 +331,18 @@ This document contains the user story backlog for the SIRUS Angular SPA. Stories
 
 **Acceptance Criteria:**
 
-- [ ] Route: `GET /evaluation-criteria`
-- [ ] Requires `AdminGuard`
-- [ ] `GET /api/evaluation-criteria` to list all criteria
-- [ ] daisyUI table: ID, Name, Actions
-- [ ] "Add Criterion" button → modal
-  - Field: name (unique)
-  - `POST /api/evaluation-criteria`
-  - Duplicate name → `409` error shown in toast
-- [ ] "Edit" button → modal with `PUT /api/evaluation-criteria/:id`
-- [ ] "Delete" button → confirmation → `DELETE /api/evaluation-criteria/:id`
-  - Blocked if `409` returned (criterion used in evaluations) — show error toast
-- [ ] Uses `MainLayoutComponent`
+- [x] Route: `GET /evaluation-criteria`
+- [x] Requires `AdminGuard`
+- [x] `GET /api/evaluation-criteria` to list all criteria
+- [x] daisyUI table: ID, Name, Actions
+- [x] "Add Criterion" button → modal
+  - [x] Field: name (unique)
+  - [x] `POST /api/evaluation-criteria`
+  - [x] Duplicate name → `409` error shown in toast
+- [x] "Edit" button → modal with `PUT /api/evaluation-criteria/:id`
+- [x] "Delete" button → confirmation → `DELETE /api/evaluation-criteria/:id`
+  - [x] Blocked if `409` returned (criterion used in evaluations) — show error toast
+- [x] Uses `MainLayoutComponent`
 
 **Linked Requirements:** `api-reference.md` Section 3.7, `CriterionDto`
 

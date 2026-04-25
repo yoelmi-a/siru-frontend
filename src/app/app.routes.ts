@@ -41,6 +41,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/employees/employees.routes')
       },
       {
+        path: 'evaluation-criteria',
+        loadChildren: () => import('./features/evaluation-criteria/evaluation-criteria.routes'),
+        canActivate: [adminGuard]
+      },
+      {
         path: 'auth/me/sessions',
         component: MySessionsComponent
       }
