@@ -214,15 +214,15 @@ This document contains the user story backlog for the SIRUS Angular SPA. Stories
 
 **Acceptance Criteria:**
 
-- [ ] Route: `GET /candidates`
-- [ ] Requires `AdminGuard`
-- [ ] `GET /api/candidates` called to list all candidates
-- [ ] daisyUI table with columns: Names, Last Names, Email, Phone, CV link, Actions
+- [x] Route: `GET /candidates`
+- [x] Requires `AdminGuard`
+- [x] `GET /api/candidates` called to list all candidates
+- [x] daisyUI table with columns: Names, Last Names, Email, Phone, CV link, Actions
 - [ ] Clicking a candidate row expands to show all their applications (from `GET /api/vacancies/:id/applications` for each vacancy they applied to)
-- [ ] "View CV" button opens the CV URL in a new tab
-- [ ] "Delete" candidate (soft delete via `DELETE /api/candidates/:id`)
-- [ ] Pagination on the candidates list (10 per page)
-- [ ] Uses `MainLayoutComponent`
+- [x] "View CV" button opens the CV URL in a new tab
+- [x] "Delete" candidate (soft delete via `DELETE /api/candidates/:id`)
+- [x] Pagination on the candidates list (10 per page)
+- [x] Uses `MainLayoutComponent`
 
 **Linked Requirements:** `api-reference.md` Section 3.2, `CandidateDto`
 

@@ -31,6 +31,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/vacancies/vacancies-manage.routes')
       },
       {
+        path: 'candidates',
+        loadChildren: () => import('./features/candidates/candidates.routes')
+      },
+      {
         path: 'auth/me/sessions',
         component: MySessionsComponent
       }
