@@ -5,10 +5,11 @@ import { ToastService } from '@core/services/toast.service';
 import { VacantDto } from '@core/models/vacancy.models';
 import { ConfirmDialogComponent } from '@shared/components/confirm-dialog/confirm-dialog';
 import { VacancyFormComponent } from '../vacancy-form/vacancy-form';
+import { VacancyApplicationsModalComponent } from '../vacancy-applications-modal/vacancy-applications-modal';
 
 @Component({
   selector: 'app-vacancy-manage-list',
-  imports: [DatePipe, ConfirmDialogComponent, VacancyFormComponent],
+  imports: [DatePipe, ConfirmDialogComponent, VacancyFormComponent, VacancyApplicationsModalComponent],
   templateUrl: './vacancy-manage-list.html'
 })
 export class VacancyManageListComponent implements OnInit {
@@ -20,6 +21,7 @@ export class VacancyManageListComponent implements OnInit {
   showForm = signal(false);
   editingVacancy = signal<VacantDto | null>(null);
   confirmDelete = signal<VacantDto | null>(null);
+  viewingApplicationsVacancy = signal<VacantDto | null>(null);
   activeFilter = signal<'All' | 'Open' | 'Closed' | 'Cancelled'>('All');
 
   filteredVacancies = computed(() => {
@@ -70,6 +72,14 @@ export class VacancyManageListComponent implements OnInit {
   onFormSaved() {
     this.closeForm();
     this.loadVacancies();
+  }
+
+  openApplicationsModal(vacancy: VacantDto) {
+    this.viewingApplicationsVacancy.set(vacancy);
+  }
+
+  closeApplicationsModal() {
+    this.viewingApplicationsVacancy.set(null);
   }
 
   confirmDeleteVacancy(vacancy: VacantDto) {

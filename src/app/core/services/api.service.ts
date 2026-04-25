@@ -73,7 +73,7 @@ export class ApiService {
       `${this.baseUrl}/Vacants/${vacancyId}/applications`, formData
     );
   }
-
+ 
   recalculateScores(vacancyId: string): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/Vacants/${vacancyId}/recalculate-scores`, {});
   }

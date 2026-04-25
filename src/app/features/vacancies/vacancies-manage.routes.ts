@@ -8,5 +8,5 @@ export const vacanciesManageRoutes: Routes = [
     canActivate: [adminGuard]
   }
 ];
-
+ 
 export default vacanciesManageRoutes;

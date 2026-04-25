@@ -41,6 +41,7 @@
             </td>
             <td>{{ vacancy.publicationDate | date:'mediumDate' }}</td>
             <td class="flex gap-2">
+              <button class="btn btn-sm btn-info" (click)="openApplicationsModal(vacancy)">Applications</button>
               <button class="btn btn-sm btn-primary" (click)="openEditForm(vacancy)">Edit</button>
               <button class="btn btn-sm btn-error" (click)="confirmDeleteVacancy(vacancy)">Delete</button>
             </td>
@@ -70,5 +71,13 @@
     confirmText="Delete"
     (confirmed)="deleteVacancy()"
     (cancelled)="cancelDelete()"
+  />
+}
+
+@if (viewingApplicationsVacancy()) {
+  <app-vacancy-applications-modal
+    [vacancyId]="viewingApplicationsVacancy()!.id"
+    [vacancyTitle]="viewingApplicationsVacancy()!.title"
+    (closed)="closeApplicationsModal()"
   />
 }

@@ -1,0 +1,82 @@
+<dialog class="modal modal-open">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-bold text-lg">
+        Applications &mdash; {{ vacancyTitle() }}
+      </h3>
+      <button class="btn btn-sm btn-secondary" [disabled]="isRecalculating()" (click)="recalculateScores()">
+        @if (isRecalculating()) {
+          <span class="loading loading-spinner"></span>
+        } @else {
+          Recalculate Scores
+        }
+      </button>
+    </div>
+
+    @if (loading()) {
+      <div class="flex justify-center p-8">
+        <span class="loading loading-spinner loading-lg"></span>
+      </div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="table table-zebra">
+          <thead>
+            <tr>
+              <th>Full Name</th>
+              <th>Status</th>
+              <th>Score</th>
+              <th>CV</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (app of applications(); track app.applicationId) {
+              <tr>
+                <td>{{ app.candidateFullName }}</td>
+                <td>
+                  <div class="badge"
+                       [class.badge-success]="app.status === 'Approved'"
+                       [class.badge-neutral]="app.status === 'Pending'"
+                       [class.badge-error]="app.status === 'Rejected'">
+                    {{ app.status }}
+                  </div>
+                </td>
+                <td>
+                  <div class="badge" [class]="getScoreBadgeClass(app.score)">
+                    {{ app.score * 100 | number:'1.0-0' }}%
+                  </div>
+                </td>
+                <td>
+                  <a [href]="app.cvUrl" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-ghost">
+                    View CV
+                  </a>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="text-center p-4">No applications found</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (totalCount() > 0) {
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+          <p class="text-sm text-base-content/60 order-2 sm:order-1">
+            Total <span class="font-medium text-base-content">{{ totalCount() }}</span> applications
+          </p>
+          <div class="join order-1 sm:order-2">
+            <button class="join-item btn btn-sm" [class.btn-disabled]="!hasPreviousPage()" (click)="goToPreviousPage()">«</button>
+            <button class="join-item btn btn-sm">Page {{ currentPage() }}</button>
+            <button class="join-item btn btn-sm" [class.btn-disabled]="!hasNextPage()" (click)="goToNextPage()">»</button>
+          </div>
+        </div>
+      }
+    }
+
+    <div class="modal-action">
+      <button class="btn" (click)="onClose()">Close</button>
+    </div>
+  </div>
+  <div class="modal-backdrop" (click)="onClose()"></div>
+</dialog>
