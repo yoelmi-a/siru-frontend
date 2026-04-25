@@ -1,18 +1,24 @@
 export interface Employee {
   id: string;
-  name: string;
+  firstName: string;
   lastName: string;
-  email: string;
+  address: string;
+  cedula: string;
   phoneNumber: string;
-  departmentId?: string;
-  positionId?: string;
-  hireDate: string;
-  status: 'Activo' | 'Inactivo';
-  history?: EmployeeHistory[];
+  dateOfBirth: string;
+  email?: string;
+  isActive: boolean;
+}
+
+export interface EmployeeListItem {
+  id: string;
+  fullName: string;
+  cedula: string;
+  phoneNumber: string;
+  isActive: boolean;
 }
 
 export interface EmployeeHistory {
-  id: string;
   positionName: string;
   departmentName: string;
   startDate: string;

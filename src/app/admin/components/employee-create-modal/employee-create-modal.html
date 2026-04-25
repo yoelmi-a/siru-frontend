@@ -2,14 +2,14 @@
   <div class="modal-box w-11/12 max-w-2xl bg-base-100">
     <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="closeModal()">✕</button>
     <h3 class="font-bold text-lg mb-4">{{ isEdit() ? 'Editar Empleado' : 'Registrar Nuevo Empleado' }}</h3>
-    
+
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Nombres -->
         <label class="form-control w-full">
           <div class="label"><span class="label-text">Nombres <span class="text-error">*</span></span></div>
-          <input type="text" formControlName="name" class="input flex items-center gap-2 w-full bg-base-200 border border-base-300 rounded-lg"
-                 [class.input-error]="form.get('name')?.invalid && (form.get('name')?.dirty || form.get('name')?.touched)" />
+          <input type="text" formControlName="firstName" class="input flex items-center gap-2 w-full bg-base-200 border border-base-300 rounded-lg"
+                 [class.input-error]="form.get('firstName')?.invalid && (form.get('firstName')?.dirty || form.get('firstName')?.touched)" />
         </label>
 
         <!-- Apellidos -->
@@ -19,11 +19,11 @@
                  [class.input-error]="form.get('lastName')?.invalid && (form.get('lastName')?.dirty || form.get('lastName')?.touched)" />
         </label>
 
-        <!-- Email -->
+        <!-- Cédula -->
         <label class="form-control w-full">
-          <div class="label"><span class="label-text">Email <span class="text-error">*</span></span></div>
-          <input type="email" formControlName="email" class="input flex items-center gap-2 w-full bg-base-200 border border-base-300 rounded-lg"
-                 [class.input-error]="form.get('email')?.invalid && (form.get('email')?.dirty || form.get('email')?.touched)" />
+          <div class="label"><span class="label-text">Cédula <span class="text-error">*</span></span></div>
+          <input type="text" formControlName="cedula" class="input flex items-center gap-2 w-full bg-base-200 border border-base-300 rounded-lg"
+                 [class.input-error]="form.get('cedula')?.invalid && (form.get('cedula')?.dirty || form.get('cedula')?.touched)" />
         </label>
 
         <!-- Teléfono -->
@@ -32,18 +32,27 @@
           <input type="tel" formControlName="phoneNumber" placeholder="ej: 809-555-5555" class="input flex items-center gap-2 w-full bg-base-200 border border-base-300 rounded-lg"
                  [class.input-error]="form.get('phoneNumber')?.invalid && (form.get('phoneNumber')?.dirty || form.get('phoneNumber')?.touched)" />
         </label>
-        
-        <!-- Detalles de Posición - Sólo en Creación -->
-        @if (!isEdit()) {
-          <label class="form-control w-full">
-            <div class="label"><span class="label-text">Departamento (ID)</span></div>
-            <input type="text" formControlName="departmentId" class="input flex items-center gap-2 w-full bg-base-200 border border-base-300 rounded-lg" />
-          </label>
-          <label class="form-control w-full">
-            <div class="label"><span class="label-text">Posición (ID/Nombre)</span></div>
-            <input type="text" formControlName="positionId" class="input flex items-center gap-2 w-full bg-base-200 border border-base-300 rounded-lg" />
-          </label>
-        }
+
+        <!-- Email -->
+        <label class="form-control w-full">
+          <div class="label"><span class="label-text">Email</span></div>
+          <input type="email" formControlName="email" class="input flex items-center gap-2 w-full bg-base-200 border border-base-300 rounded-lg"
+                 [class.input-error]="form.get('email')?.invalid && (form.get('email')?.dirty || form.get('email')?.touched)" />
+        </label>
+
+        <!-- Fecha de Nacimiento -->
+        <label class="form-control w-full">
+          <div class="label"><span class="label-text">Fecha de Nacimiento <span class="text-error">*</span></span></div>
+          <input type="date" formControlName="dateOfBirth" class="input flex items-center gap-2 w-full bg-base-200 border border-base-300 rounded-lg"
+                 [class.input-error]="form.get('dateOfBirth')?.invalid && (form.get('dateOfBirth')?.dirty || form.get('dateOfBirth')?.touched)" />
+        </label>
+
+        <!-- Dirección -->
+        <label class="form-control w-full md:col-span-2">
+          <div class="label"><span class="label-text">Dirección <span class="text-error">*</span></span></div>
+          <input type="text" formControlName="address" class="input flex items-center gap-2 w-full bg-base-200 border border-base-300 rounded-lg"
+                 [class.input-error]="form.get('address')?.invalid && (form.get('address')?.dirty || form.get('address')?.touched)" />
+        </label>
       </div>
 
       @if (errorMessage()) {

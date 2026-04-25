@@ -1,10 +1,9 @@
 export interface SaveEmployee {
-  name: string;
+  firstName: string;
   lastName: string;
-  email: string;
+  address: string;
+  cedula: string;
   phoneNumber: string;
-  departmentId?: string;
-  positionId?: string;
-  hireDate: string;
-  candidateId?: string; // Si viene de una postulación/reclutamiento
+  dateOfBirth: string;
+  email?: string;
 }

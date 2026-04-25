@@ -1,71 +1,69 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { BASE_URL } from '../../../utils/constants';
 
-export interface EvaluationCriteria {
-  id: string;
+export interface CriterionDto {
+  id: number;
   name: string;
-  description: string;
 }
 
-export interface EmployeeEvaluation {
+export interface EvaluationCriterionPayload {
+  criterionId: number;
+  score: number;
+  observation?: string;
+}
+
+export interface EvaluationInsertPayload {
+  employeeId: string;
+  evaluationDate: string;
+  criteria: EvaluationCriterionPayload[];
+}
+
+export interface EvaluationDetailDto {
+  criterionId: number;
+  criterionName: string;
+  score: number;
+  observation?: string;
+}
+
+export interface EvaluationDto {
   id: string;
   employeeId: string;
-  employeeName: string;
-  evaluatorId: string;
+  employeeFullName: string;
+  positionName: string;
   date: string;
-  scores: { criteriaId: string; criteriaName: string; score: number }[];
   averageScore: number;
-  comments: string;
+  criteria: EvaluationDetailDto[];
+}
+
+export interface EvaluationHistoryCriterionDto {
+  name: string;
+  score: number;
+  observation?: string;
+}
+
+export interface EvaluationHistoryDto {
+  id: string;
+  date: string;
+  averageScore: number;
+  positionName: string;
+  criteria: EvaluationHistoryCriterionDto[];
 }
 
 @Injectable({ providedIn: 'root' })
 export class EvaluationService {
-  
-  private mockCriteria: EvaluationCriteria[] = [
-    { id: 'c-1', name: 'Responsabilidad', description: 'Cumplimiento de tareas a tiempo' },
-    { id: 'c-2', name: 'Trabajo en Equipo', description: 'Colaboración con compañeros' },
-    { id: 'c-3', name: 'Resolución de Problemas', description: 'Capacidad administrativa y lógica' },
-  ];
+  private http = inject(HttpClient);
 
-  private mockEvaluations: EmployeeEvaluation[] = [
-    {
-      id: 'ev-1',
-      employeeId: 'e-1',
-      employeeName: 'Juan Pérez',
-      evaluatorId: 'admin-1',
-      date: '2024-03-01',
-      scores: [
-        { criteriaId: 'c-1', criteriaName: 'Responsabilidad', score: 90 },
-        { criteriaId: 'c-2', criteriaName: 'Trabajo en Equipo', score: 85 },
-        { criteriaId: 'c-3', criteriaName: 'Resolución de Problemas', score: 95 }
-      ],
-      averageScore: 90,
-      comments: 'Excelente desempeño este trimestre.'
-    }
-  ];
-
-  // HU-10 - Crear/Obtener criterios de evaluación
-  getCriteria(): Observable<EvaluationCriteria[]> {
-    return of(this.mockCriteria).pipe(delay(400));
+  getCriteria(): Observable<CriterionDto[]> {
+    return this.http.get<CriterionDto[]>(`${BASE_URL}/evaluation-criteria`);
   }
 
-  // HU-12 - Ver evaluaciones de un empleado
-  getEvaluationsByEmployee(employeeId: string): Observable<EmployeeEvaluation[]> {
-    return of(this.mockEvaluations.filter(e => e.employeeId === employeeId)).pipe(delay(600));
+  createEvaluation(payload: EvaluationInsertPayload): Observable<EvaluationDto> {
+    return this.http.post<EvaluationDto>(`${BASE_URL}/Evaluations`, payload);
   }
 
-  // HU-11 y HU-13 - Registrar evaluación y generar resultado automático
-  createEvaluation(payload: Omit<EmployeeEvaluation, 'id' | 'averageScore'>): Observable<EmployeeEvaluation> {
-    const total = payload.scores.reduce((acc, curr) => acc + curr.score, 0);
-    const avg = payload.scores.length > 0 ? (total / payload.scores.length) : 0;
-    
-    const newEval: EmployeeEvaluation = {
-      ...payload,
-      id: `ev-${Date.now()}`,
-      averageScore: Math.round(avg * 10) / 10
-    };
-    
-    this.mockEvaluations = [...this.mockEvaluations, newEval];
-    return of(newEval).pipe(delay(500));
+  getEvaluationsByEmployee(employeeId: string): Observable<EvaluationHistoryDto[]> {
+    return this.http.get<EvaluationHistoryDto[]>(`${BASE_URL}/Employees/${employeeId}/evaluations`);
   }
 }

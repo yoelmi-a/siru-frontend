@@ -1,13 +1,11 @@
-import { Component, computed, inject, ViewChild } from '@angular/core';
+import { Component, computed, inject, ViewChild, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EmployeeService } from '../../../services/employee.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { EmployeeCreateModalComponent } from '../../../components/employee-create-modal/employee-create-modal';
-import { EvaluationService, EmployeeEvaluation } from '../../../services/evaluation.service';
+import { EvaluationService, EvaluationHistoryDto } from '../../../services/evaluation.service';
 import { DatePipe } from '@angular/common';
-import { signal } from '@angular/core';
-
-import { Employee } from '../../../interfaces/employees/employee.interface';
+import { Employee, EmployeeHistory } from '../../../interfaces/employees/employee.interface';
 
 @Component({
   selector: 'app-employee-details-page',
@@ -22,8 +20,11 @@ export class EmployeeDetailsPage {
 
   @ViewChild(EmployeeCreateModalComponent) modal!: EmployeeCreateModalComponent;
 
-  evaluations = signal<EmployeeEvaluation[]>([]);
+  evaluations = signal<EvaluationHistoryDto[]>([]);
   isEvaluationsLoading = signal(false);
+
+  history = signal<EmployeeHistory[]>([]);
+  isHistoryLoading = signal(false);
 
   employeeId = computed(() => this.route.snapshot.paramMap.get('id') ?? '');
 
@@ -53,6 +54,19 @@ export class EmployeeDetailsPage {
 
   onSaved() {
     this.employeeResource.reload();
+  }
+
+  loadHistory() {
+    this.isHistoryLoading.set(true);
+    this.service.getEmployeeHistory(this.employeeId()).subscribe({
+      next: (res) => {
+        this.history.set(res);
+        this.isHistoryLoading.set(false);
+      },
+      error: () => {
+        this.isHistoryLoading.set(false);
+      }
+    });
   }
 
   loadEvaluations() {

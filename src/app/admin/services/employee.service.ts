@@ -1,102 +1,42 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, delay, throwError } from 'rxjs';
-import { Employee } from '../interfaces/employees/employee.interface';
-import { SaveEmployee } from '../interfaces/employees/save-employee.interface';
-
-// MOCK DATA PARA HU-06 a HU-09
-let MOCK_EMPLOYEES: Employee[] = [
-  {
-    id: 'e-1',
-    name: 'Juan',
-    lastName: 'Pérez',
-    email: 'juan.perez@empresa.com',
-    phoneNumber: '809-123-4567',
-    hireDate: '2022-01-15',
-    status: 'Activo',
-    history: [
-      { id: 'h-1', positionName: 'Desarrollador Junior', departmentName: 'TI', startDate: '2022-01-15', endDate: '2024-01-01' },
-      { id: 'h-2', positionName: 'Desarrollador Semi-Senior', departmentName: 'TI', startDate: '2024-01-02', endDate: null }
-    ]
-  },
-  {
-    id: 'e-2',
-    name: 'Ana',
-    lastName: 'Gómez',
-    email: 'ana.gomez@empresa.com',
-    phoneNumber: '849-987-6543',
-    hireDate: '2023-05-20',
-    status: 'Activo',
-    history: [
-      { id: 'h-3', positionName: 'Analista de QA', departmentName: 'TI', startDate: '2023-05-20', endDate: null }
-    ]
-  }
-];
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Employee, EmployeeListItem, EmployeeHistory } from '@admin/interfaces/employees/employee.interface';
+import { SaveEmployee } from '@admin/interfaces/employees/save-employee.interface';
+import { PaginatedResponse } from '@shared/interfaces/paginated-response.interface';
+import { BASE_URL } from '../../../utils/constants';
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
+  private http = inject(HttpClient);
 
-  // HU-08 - Obtener todos
-  getAllEmployees(): Observable<Employee[]> {
-    return of([...MOCK_EMPLOYEES]).pipe(delay(500));
+  getAllEmployees(page = 1, pageSize = 10, isActive?: boolean): Observable<PaginatedResponse<EmployeeListItem>> {
+    const params: Record<string, string | number | boolean> = { page, pageSize };
+    if (isActive !== undefined) params['isActive'] = isActive;
+    return this.http.get<PaginatedResponse<EmployeeListItem>>(`${BASE_URL}/Employees`, { params });
   }
 
-  // Obtener por ID con su historial (HU-09)
   getEmployeeById(id: string): Observable<Employee> {
-    if (id === 'new') {
-      return of({
-        id: '', name: '', lastName: '', email: '', phoneNumber: '',
-        hireDate: new Date().toISOString().split('T')[0], status: 'Activo', history: []
-      });
-    }
-    const emp = MOCK_EMPLOYEES.find(e => e.id === id);
-    if (emp) {
-      return of({...emp}).pipe(delay(500));
-    }
-    return throwError(() => new Error('Empleado no encontrado'));
+    return this.http.get<Employee>(`${BASE_URL}/Employees/${id}`);
   }
 
-  // HU-06 - Registrar empleado
-  createEmployee(payload: SaveEmployee): Observable<Employee> {
-    const newEmployee: Employee = {
-      id: `e-${Date.now()}`,
-      name: payload.name,
-      lastName: payload.lastName,
-      email: payload.email,
-      phoneNumber: payload.phoneNumber,
-      departmentId: payload.departmentId,
-      positionId: payload.positionId,
-      hireDate: payload.hireDate,
-      status: 'Activo',
-      history: payload.positionId ? [{
-        id: `h-${Date.now()}`,
-        positionName: payload.positionId, // Mock
-        departmentName: payload.departmentId ?? 'N/A', // Mock
-        startDate: payload.hireDate,
-        endDate: null
-      }] : []
-    };
-    
-    MOCK_EMPLOYEES = [...MOCK_EMPLOYEES, newEmployee];
-    return of(newEmployee).pipe(delay(500));
+  createEmployee(employee: SaveEmployee): Observable<Employee> {
+    return this.http.post<Employee>(`${BASE_URL}/Employees`, employee);
   }
 
-  // HU-07 - Editar empleado
-  updateEmployee(id: string, payload: SaveEmployee): Observable<void> {
-    const index = MOCK_EMPLOYEES.findIndex(e => e.id === id);
-    if (index === -1) return throwError(() => new Error('Empleado no encontrado'));
-
-    MOCK_EMPLOYEES[index] = {
-      ...MOCK_EMPLOYEES[index],
-      name: payload.name,
-      lastName: payload.lastName,
-      email: payload.email,
-      phoneNumber: payload.phoneNumber,
-    };
-    return of(undefined).pipe(delay(500));
+  updateEmployee(id: string, employee: SaveEmployee): Observable<Employee> {
+    return this.http.put<Employee>(`${BASE_URL}/Employees/${id}`, employee);
   }
 
   deleteEmployee(id: string): Observable<void> {
-    MOCK_EMPLOYEES = MOCK_EMPLOYEES.filter(e => e.id !== id);
-    return of(undefined).pipe(delay(500));
+    return this.http.delete<void>(`${BASE_URL}/Employees/${id}`);
+  }
+
+  getEmployeeHistory(id: string): Observable<EmployeeHistory[]> {
+    return this.http.get<EmployeeHistory[]>(`${BASE_URL}/Employees/${id}/history`);
+  }
+
+  getEmployeeEvaluations(id: string): Observable<any[]> {
+    return this.http.get<any[]>(`${BASE_URL}/Employees/${id}/evaluations`);
   }
 }

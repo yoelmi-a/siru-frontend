@@ -19,7 +19,7 @@ export class EmployeesPage {
     stream: () => this.service.getAllEmployees()
   });
 
-  employees = computed(() => this.employeesResource.value() ?? []);
+  employees = computed(() => this.employeesResource.value()?.items ?? []);
 
   onCreateClicked() {
     this.modal.openModal();

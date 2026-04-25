@@ -14,24 +14,26 @@
     </div>
   } @else if (employee(); as emp) {
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
+
       <!-- Lado Izquierdo: Info Personal -->
       <div class="col-span-1 lg:col-span-1 space-y-6">
         <div class="card bg-base-100 shadow-xl border border-base-200">
           <div class="card-body">
             <h2 class="card-title border-b pb-2">Información Personal</h2>
             <div class="mt-4 space-y-3 text-sm">
-              <p><span class="font-semibold text-base-content/70 block">Nombre Completo:</span> {{ emp.name }} {{ emp.lastName }}</p>
+              <p><span class="font-semibold text-base-content/70 block">Nombre Completo:</span> {{ emp.firstName }} {{ emp.lastName }}</p>
               <p><span class="font-semibold text-base-content/70 block">ID:</span> {{ emp.id }}</p>
+              <p><span class="font-semibold text-base-content/70 block">Cédula:</span> {{ emp.cedula }}</p>
               <p><span class="font-semibold text-base-content/70 block">Email:</span> {{ emp.email }}</p>
               <p><span class="font-semibold text-base-content/70 block">Teléfono:</span> {{ emp.phoneNumber }}</p>
-              
+              <p><span class="font-semibold text-base-content/70 block">Dirección:</span> {{ emp.address }}</p>
+
               <div class="divider"></div>
-              
-              <p><span class="font-semibold text-base-content/70 block">Fecha de Contratación:</span> {{ emp.hireDate }}</p>
+
+              <p><span class="font-semibold text-base-content/70 block">Fecha de Nacimiento:</span> {{ emp.dateOfBirth }}</p>
               <p><span class="font-semibold text-base-content/70 block">Estado Actual:</span>
-                <span class="badge badge-sm mt-1" [class.badge-success]="emp.status === 'Activo'" [class.badge-error]="emp.status === 'Inactivo'">
-                  {{emp.status}}
+                <span class="badge badge-sm mt-1" [class.badge-success]="emp.isActive" [class.badge-error]="!emp.isActive">
+                  {{ emp.isActive ? 'Activo' : 'Inactivo' }}
                 </span>
               </p>
             </div>
@@ -48,11 +50,15 @@
         <div class="card bg-base-100 shadow-xl border border-base-200">
           <div class="card-body">
             <div class="flex justify-between items-center mb-4">
-              <h2 class="card-title">Historial Laboral Interno (HU-09)</h2>
-              <button class="btn btn-xs btn-outline">Agregar Posición</button>
+              <h2 class="card-title">Historial Laboral Interno</h2>
+              <button class="btn btn-xs btn-outline" (click)="loadHistory()">↻ Cargar Historial</button>
             </div>
-            
-            @if (emp.history && emp.history.length > 0) {
+
+            @if (isHistoryLoading()) {
+              <div class="flex justify-center py-4">
+                <span class="loading loading-spinner text-primary"></span>
+              </div>
+            } @else if (history().length > 0) {
               <div class="overflow-x-auto">
                 <table class="table table-zebra w-full">
                   <thead>
@@ -64,7 +70,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @for (hist of emp.history; track hist.id) {
+                    @for (hist of history(); track hist.positionName) {
                       <tr>
                         <td class="font-medium">{{ hist.positionName }}</td>
                         <td>{{ hist.departmentName }}</td>
@@ -88,7 +94,7 @@
             }
           </div>
         </div>
-        
+
         <!-- Tarjeta de Evaluaciones (Módulo HU-10 a HU-13) -->
         <div class="card bg-base-100 shadow border border-base-200">
           <div class="card-body">
@@ -96,7 +102,7 @@
               <h3 class="card-title">Evaluaciones de Desempeño (HU-10 a HU-13)</h3>
               <button class="btn btn-primary btn-sm btn-outline" (click)="loadEvaluations()">↻ Cargar Evaluaciones</button>
             </div>
-            
+
             @if (isEvaluationsLoading()) {
               <div class="flex justify-center py-4">
                 <span class="loading loading-spinner text-primary"></span>
@@ -107,14 +113,13 @@
                   <div class="rounded-lg border p-4 bg-base-200/50">
                     <div class="flex justify-between font-bold text-lg border-b pb-2 mb-2">
                       <span>{{ ev.date | date: 'dd/MM/yyyy' }}</span>
-                      <span class="text-primary text-xl">Score: {{ ev.averageScore }}%</span>
+                      <span class="text-primary text-xl">Score: {{ ev.averageScore }}/5</span>
                     </div>
                     <ul class="text-sm list-disc pl-5 opacity-80 mb-2">
-                      @for (score of ev.scores; track score.criteriaId) {
-                        <li>{{ score.criteriaName }}: {{ score.score }}/100</li>
+                      @for (criterion of ev.criteria; track criterion.name) {
+                        <li>{{ criterion.name }}: {{ criterion.score }}/5</li>
                       }
                     </ul>
-                    <p class="text-sm italic">"{{ ev.comments }}"</p>
                   </div>
                 }
               </div>

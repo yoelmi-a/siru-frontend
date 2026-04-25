@@ -14,7 +14,7 @@ export class EmployeeCreateModalComponent {
   @ViewChild('modal') modal!: ElementRef<HTMLDialogElement>;
   private fb = inject(FormBuilder);
   private service = inject(EmployeeService);
-  
+
   saved = output<void>();
 
   isEdit = signal(false);
@@ -23,13 +23,13 @@ export class EmployeeCreateModalComponent {
   currentEmployeeId = signal<string | null>(null);
 
   form = this.fb.group({
-    name: ['', Validators.required],
+    firstName: ['', Validators.required],
     lastName: ['', Validators.required],
-    email: ['', [Validators.required, Validators.pattern(FormUtils.emailPattern)]],
+    address: ['', Validators.required],
+    cedula: ['', Validators.required],
+    email: ['', [Validators.pattern(FormUtils.emailPattern)]],
     phoneNumber: ['', [Validators.required, Validators.pattern(FormUtils.dominicanPhonePattern)]],
-    departmentId: [''],
-    positionId: [''],
-    hireDate: [new Date().toISOString().split('T')[0]]
+    dateOfBirth: [new Date().toISOString().split('T')[0], Validators.required]
   });
 
   openModal(employee?: Employee) {
@@ -38,20 +38,20 @@ export class EmployeeCreateModalComponent {
       this.isEdit.set(true);
       this.currentEmployeeId.set(employee.id);
       this.form.patchValue({
-        name: employee.name,
+        firstName: employee.firstName,
         lastName: employee.lastName,
-        email: employee.email,
+        address: employee.address,
+        cedula: employee.cedula,
+        email: employee.email ?? '',
         phoneNumber: employee.phoneNumber,
-        departmentId: employee.departmentId ?? '',
-        positionId: employee.positionId ?? '',
-        hireDate: employee.hireDate
+        dateOfBirth: employee.dateOfBirth
       });
     } else {
       this.isEdit.set(false);
       this.currentEmployeeId.set(null);
-      this.form.reset({ hireDate: new Date().toISOString().split('T')[0] });
+      this.form.reset({ dateOfBirth: new Date().toISOString().split('T')[0] });
     }
-    
+
     this.modal.nativeElement.showModal();
   }
 
@@ -71,17 +71,17 @@ export class EmployeeCreateModalComponent {
 
     const formValues = this.form.value;
     const payload = {
-      name: formValues.name!,
+      firstName: formValues.firstName!,
       lastName: formValues.lastName!,
-      email: formValues.email!,
+      address: formValues.address!,
+      cedula: formValues.cedula!,
+      email: formValues.email || undefined,
       phoneNumber: formValues.phoneNumber!,
-      departmentId: formValues.departmentId ?? '',
-      positionId: formValues.positionId ?? '',
-      hireDate: formValues.hireDate!
+      dateOfBirth: formValues.dateOfBirth!
     };
 
     const request$: Observable<void> = this.isEdit() && this.currentEmployeeId()
-      ? this.service.updateEmployee(this.currentEmployeeId()!, payload)
+      ? this.service.updateEmployee(this.currentEmployeeId()!, payload).pipe(map(() => undefined))
       : this.service.createEmployee(payload).pipe(map(() => undefined));
 
     request$.subscribe({
