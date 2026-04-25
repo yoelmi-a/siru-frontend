@@ -6,7 +6,7 @@ export const VacanciesRoutes: Routes = [
   {
     path: '',
     component: PublicLayout,
-    children: [
+    children: [ 
       {
         path: '',
         component: VacanciesPage

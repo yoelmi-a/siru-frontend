@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from '@core/guards/auth.guard';
+import { adminGuard } from '@core/guards/admin.guard';
 import { MainLayout } from '@layouts/main-layout/main-layout';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { MySessionsComponent } from './features/auth/my-sessions.component';
@@ -24,7 +25,8 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        component: DashboardComponent
+        component: DashboardComponent,
+        canActivate: [adminGuard]
       },
       {
         path: 'vacancies-manage',

@@ -149,15 +149,15 @@ This document contains the user story backlog for the SIRUS Angular SPA. Stories
 
 **Acceptance Criteria:**
 
-- [ ] Route: `GET /` (dashboard home after login)
-- [ ] Requires `AdminGuard` — only Admin role can access
-- [ ] Dashboard displays:
+- [x] Route: `GET /` (dashboard home after login)
+- [x] Requires `AdminGuard` — only Admin role can access
+- [x] Dashboard displays:
   - Total open vacancies count (from `GET /api/vacancies`, filter by `Open` status)
   - Total active employees count (from `GET /api/employees`, filtered by `isActive=true`)
   - Average hiring time from `GET /api/reports/hiring-time`
-  - Top 5 recent candidates who applied (from `GET /api/vacancies/:id/applications` for each open vacancy — pick 5 most recent)
-- [ ] Each metric card links to the relevant management page
-- [ ] Dashboard uses `MainLayoutComponent`
+  - Top 5 open vacancies (from `GET /api/vacancies`, pick 5 most recent or just 5)
+- [x] Each metric card links to the relevant management page
+- [x] Dashboard uses `MainLayoutComponent`
 
 **Linked Requirements:** `api-reference.md` Section 3.1, Section 3.3, Section 3.8
 
