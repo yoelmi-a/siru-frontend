@@ -1,0 +1,33 @@
+<dialog class="modal modal-open">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">
+      {{ department() ? 'Edit Department' : 'Create Department' }}
+    </h3>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="py-4">
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text">Name</span>
+        </label>
+        <input
+          type="text"
+          formControlName="name"
+          class="input input-bordered"
+          placeholder="Department name" />
+        <form-error-label [control]="form.get('name')!" />
+      </div>
+
+      <div class="modal-action">
+        <button type="button" class="btn" (click)="onCancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="isPosting()">
+          @if (isPosting()) {
+            <span class="loading loading-spinner"></span>
+          } @else {
+            {{ department() ? 'Update' : 'Create' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="modal-backdrop" (click)="onCancel()"></div>
+</dialog>

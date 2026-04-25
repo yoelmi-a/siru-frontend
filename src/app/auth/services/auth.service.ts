@@ -1,58 +1,55 @@
-import { environment } from "src/environments/environment";
+import { environment } from '../../../environments/environment';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { User } from "../interfaces/user.interface";
-import { HttpClient } from "@angular/common/http";
-import { catchError, delay, map, Observable, of, tap } from "rxjs";
-import { ProblemDetails } from "../interfaces/problem-details.interface";
-import { jwtDecode } from "jwt-decode";
-import { JwtPayload } from "@auth/interfaces/jwt-payload.interface";
+import { HttpClient } from '@angular/common/http';
+import { catchError, map, Observable, of } from 'rxjs';
+import { ProblemDetails } from '../interfaces/problem-details.interface';
+import { jwtDecode } from 'jwt-decode';
+import { JwtPayload } from '@auth/interfaces/jwt-payload.interface';
 
-const baseUrl = environment.apiUrl;
+const ACCESS_TOKEN_KEY = 'sirus_access_token';
+const REFRESH_TOKEN_KEY = 'sirus_refresh_token';
 
 export enum Role {
-  OWNER = 'Owner',
   ADMIN = 'Admin',
-  SUPER_ADMIN = 'SuperAdmin',
-  DELIVERY = 'Delivery',
-  MECHANIC = 'Mechanic',
-  CLERK = 'Clerk'
+  SUPERVISOR = 'Supervisor'
 }
-
-const ADMIN_ROLES: Role[] = [Role.ADMIN, Role.SUPER_ADMIN, Role.OWNER];
-const DELIVERY_ROLES: Role[] = [Role.DELIVERY, Role.MECHANIC];
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private _token = signal<string | null>(localStorage.getItem('token'));
-  private _roles = signal<string[] | null>(this.loadRolesFromToken());
-  private _user = signal<User | null>(null);
+  private _token = signal<string | null>(localStorage.getItem(ACCESS_TOKEN_KEY));
+  private _currentUser = signal<JwtPayload | null>(this.decodeToken());
   private http = inject(HttpClient);
   private _errorMessage = signal<string | null>(null);
 
-
   errorMessage = this._errorMessage.asReadonly();
-  hasAdminPermission = computed(() => this._roles()?.some(role => ADMIN_ROLES.includes(role as Role)) ?? false);
-  hasDeliveryPermission = computed(() => this._roles()?.some(role => DELIVERY_ROLES.includes(role as Role)) ?? false);
-  hasClerkPermission = computed(() => this._roles()?.includes(Role.CLERK) ?? false);
+  currentUser = this._currentUser.asReadonly();
   token = computed(() => this._token());
+  hasAdminRole = computed(() => this._currentUser()?.roles?.includes('Admin') ?? false);
+  hasSupervisorRole = computed(() =>
+    (this._currentUser()?.roles?.includes('Admin') ?? false) ||
+    (this._currentUser()?.roles?.includes('Supervisor') ?? false)
+  );
 
   login(email: string, password: string): Observable<boolean> {
     this._errorMessage.set(null);
-    return this.http.post<string>(`${baseUrl}/auth/login`, {
-      email: email,
-      password: password
-    }).pipe(
-      map(resp => this.handleAuthSuccess(resp)),
+    return this.http.post<string>(`${environment.authUrl}/auth/login`, {
+      email,
+      password
+    }, { withCredentials: true }).pipe(
+      map(token => {
+        this.saveToken(token);
+        return true;
+      }),
       catchError((error: any) => this.handleAuthError(error))
     );
   }
 
   forgotPassword(email: string): Observable<boolean> {
     this._errorMessage.set(null);
-    var origin = window.location.origin;
-    return this.http.post<void>(`${baseUrl}/auth/forgot-password`, {
-      email: email,
-      origin: origin
+    const origin = window.location.origin;
+    return this.http.post<void>(`${environment.authUrl}/auth/forgot-password`, {
+      email,
+      origin
     }).pipe(
       map(() => true),
       catchError((error: any) => this.handleAuthError(error))
@@ -61,10 +58,10 @@ export class AuthService {
 
   resetPassword(password: string, accountId: string, token: string): Observable<boolean> {
     this._errorMessage.set(null);
-    return this.http.post<void>(`${baseUrl}/auth/reset-password`, {
-      password: password,
-      accountId: accountId,
-      token: token
+    return this.http.post<void>(`${environment.authUrl}/auth/reset-password`, {
+      password,
+      accountId,
+      token
     }).pipe(
       map(() => true),
       catchError((error: any) => this.handleAuthError(error))
@@ -72,66 +69,75 @@ export class AuthService {
   }
 
   refreshToken(): Observable<string> {
-    return this.http.post<string>(`${baseUrl}/auth/refresh`, {
-      jwtToken: this.token()
-    },
-  {
-    withCredentials: true
-  }).pipe(
-      tap(resp => this.handleAuthSuccess(resp)),
+    return this.http.post<string>(`${environment.authUrl}/auth/refresh`, {
+      jwtToken: this._token()
+    }, { withCredentials: true }).pipe(
+      map(token => {
+        this.saveToken(token);
+        return token;
+      })
     );
   }
 
-  logout() {
-    this.http.post('/auth/logout', {}, { withCredentials: true });
-    console.log("AuthService logging out");
-    this.deleteTokenAndRoles();
+  logout(): void {
+    this.http.post<void>(`${environment.authUrl}/auth/logout`, {}, { withCredentials: true }).subscribe();
+    this.clearToken();
+  }
+
+  getCurrentUser(): JwtPayload | null {
+    return this._currentUser();
+  }
+
+  hasRole(role: string): boolean {
+    return this._currentUser()?.roles?.includes(role) ?? false;
   }
 
   isAuthenticated(): boolean {
-    if (this.token()) {
-      return true;
-    }
+    const token = this._token();
+    if (!token) return false;
+
+    const decoded = this.decodeToken();
+    if (!decoded) return false;
+
+    const exp = decoded.exp * 1000;
+    return Date.now() < exp;
+  }
+
+  hasClerkPermission(): boolean {
     return false;
   }
 
-  private handleAuthSuccess(token: string) {
-    // this._user.set(user);
-    this.saveTokenAndRoles(token);
-    return true;
+  hasDeliveryPermission(): boolean {
+    return false;
+  }
+
+  private saveToken(token: string): void {
+    this._token.set(token);
+    localStorage.setItem(ACCESS_TOKEN_KEY, token);
+    this._currentUser.set(this.decodeToken());
+  }
+
+  private clearToken(): void {
+    localStorage.removeItem(ACCESS_TOKEN_KEY);
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    this._token.set(null);
+    this._currentUser.set(null);
+  }
+
+  private decodeToken(): JwtPayload | null {
+    const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+    if (!token) return null;
+    try {
+      return jwtDecode<JwtPayload>(token);
+    } catch {
+      return null;
+    }
   }
 
   private handleAuthError(error: any): Observable<boolean> {
-    // this.logout();
     const problemDetails: ProblemDetails = error.error;
-    const message = problemDetails.detail ?? problemDetails?.title ?? 'Error desconocido';
-    this._errorMessage.set(message); // 👈 guardar el mensaje
+    const message = problemDetails?.detail ?? problemDetails?.title ?? 'Error desconocido';
+    this._errorMessage.set(message);
     return of(false);
-  }
-
-  private saveTokenAndRoles(token: string): void {
-    this._token.set(token);
-    localStorage.setItem('token', token);
-    this._roles.set(this.loadRolesFromToken());
-  }
-
-  private deleteTokenAndRoles(): void {
-    localStorage.removeItem('token');
-    this._token.set(null);
-    this._roles.set(null);
-  }
-
-  private loadRolesFromToken(): string[] | null {
-    const token = localStorage.getItem('token');
-    if (!token) return null;
-    try {
-      const decoded = jwtDecode<JwtPayload>(token);
-      console.log('decoded:', decoded);
-      console.log('roles:', decoded.roles);
-      return decoded.roles;
-    } catch (e) {
-      console.error('Error decodificando token:', e);
-      return null;
-    }
   }
 }

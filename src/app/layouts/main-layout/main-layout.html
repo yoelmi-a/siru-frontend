@@ -1,0 +1,61 @@
+<div class="drawer lg:drawer-open">
+  <input id="main-drawer" type="checkbox" class="drawer-toggle" />
+  <div class="drawer-content flex flex-col min-h-screen">
+    <div class="navbar sticky top-0 z-50 bg-base-100 shadow-sm">
+      <div class="navbar-start">
+        <label for="main-drawer" class="btn btn-ghost lg:hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" />
+          </svg>
+        </label>
+        <a class="btn btn-ghost text-xl">SIRUS</a>
+      </div>
+      <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+          <li><a routerLink="/" routerLinkActive="active">Dashboard</a></li>
+          <li><a routerLink="/vacancies/manage" routerLinkActive="active">Vacancies</a></li>
+          <li><a routerLink="/candidates" routerLinkActive="active">Candidates</a></li>
+          <li><a routerLink="/employees" routerLinkActive="active">Employees</a></li>
+          <li><a routerLink="/positions" routerLinkActive="active">Positions</a></li>
+          <li><a routerLink="/evaluation-criteria" routerLinkActive="active">Criteria</a></li>
+          <li><a routerLink="/reports" routerLinkActive="active">Reports</a></li>
+          <li><a routerLink="/accounts" routerLinkActive="active">Accounts</a></li>
+        </ul>
+      </div>
+      <div class="navbar-end gap-2">
+        <div class="text-sm font-medium hidden md:block">{{ fullName }}</div>
+        <button class="btn btn-ghost btn-sm" (click)="logout()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <main class="flex-1 p-4 bg-base-200">
+      <router-outlet />
+    </main>
+  </div>
+  <div class="drawer-side">
+    <label for="main-drawer" class="drawer-overlay"></label>
+    <aside class="w-64 min-h-screen bg-base-100">
+      <div class="p-4">
+        <h2 class="text-2xl font-bold">SIRUS</h2>
+        <p class="text-sm text-base-content/60">Smart Intelligent Resource Optimization</p>
+      </div>
+      <ul class="menu p-4">
+        <li><a routerLink="/" routerLinkActive="active">Dashboard</a></li>
+        <li><a routerLink="/vacancies/manage" routerLinkActive="active">Vacancies</a></li>
+        <li><a routerLink="/candidates" routerLinkActive="active">Candidates</a></li>
+        <li><a routerLink="/employees" routerLinkActive="active">Employees</a></li>
+        <li><a routerLink="/positions" routerLinkActive="active">Positions</a></li>
+        <li><a routerLink="/evaluation-criteria" routerLinkActive="active">Evaluation Criteria</a></li>
+        <li><a routerLink="/evaluations/create" routerLinkActive="active">Create Evaluation</a></li>
+        <li><a routerLink="/evaluations/history" routerLinkActive="active">Evaluation History</a></li>
+        <li><a routerLink="/reports" routerLinkActive="active">Reports</a></li>
+        <li><a routerLink="/accounts" routerLinkActive="active">Accounts</a></li>
+        <li><a routerLink="/auth/me/sessions" routerLinkActive="active">My Sessions</a></li>
+      </ul>
+    </aside>
+  </div>
+</div>

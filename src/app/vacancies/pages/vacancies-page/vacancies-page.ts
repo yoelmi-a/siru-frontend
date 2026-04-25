@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { VacantsCard } from '@vacants/components/vacants-card/vacants-card.component';
-import { Card } from '@vacants/interfaces/card.interface';
-import { Header } from '@vacants/interfaces/header.interface';
-import { VacantsHeaderComponent } from '@vacants/components/vacants-header/vacants-header.component';
+import { VacantsCard } from '@vacancies/components/vacants-card/vacants-card.component';
+import { Card } from '@vacancies/interfaces/card.interface';
+import { Header } from '@vacancies/interfaces/header.interface';
+import { VacantsHeaderComponent } from '@vacancies/components/vacants-header/vacants-header.component';
 
 @Component({
-  selector: 'app-vacants-page',
+  selector: 'app-vacancies-page',
   imports: [VacantsCard, VacantsHeaderComponent],
-  templateUrl: './vacants-page.html',
+  templateUrl: './vacancies-page.html',
 })
-export class VacantsPage {
+export class VacanciesPage {
   header = signal<Header>({
     Title: 'Encuentra tu próximo reto',
     Description: 'Explora cientos de oportunidades en tecnología, diseño y marketing.',

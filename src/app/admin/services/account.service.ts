@@ -2,10 +2,10 @@ import { Account, EditAccount } from '@admin/interfaces/account.interface';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { ProblemDetails } from '@auth/interfaces/problem-details.interface';
+import { environment } from '@env/environment';
 import { catchError, map, Observable, of } from 'rxjs';
-import { environment } from 'src/environments/environment';
 
-const baseUrl = environment.apiUrl;
+const baseUrl = environment.authUrl;
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -43,10 +43,9 @@ export class AccountService {
   }
 
   private handleError(error: any): Observable<boolean> {
-    // this.logout();
     const problemDetails: ProblemDetails = error.error;
     const message = problemDetails.detail ?? problemDetails?.title ?? 'Error desconocido';
-    this._errorMessage.set(message); // 👈 guardar el mensaje
+    this._errorMessage.set(message);
     return of(false);
   }
 

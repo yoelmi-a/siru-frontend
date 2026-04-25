@@ -1,0 +1,24 @@
+<div class="container mx-auto p-4">
+  <div class="tabs tabs-lift">
+    <button
+      class="tab"
+      [class.tab-active]="activeTab() === 'positions'"
+      (click)="setTab('positions')">
+      Positions
+    </button>
+    <button
+      class="tab"
+      [class.tab-active]="activeTab() === 'departments'"
+      (click)="setTab('departments')">
+      Departments
+    </button>
+  </div>
+
+  <div class="mt-4">
+    @if (activeTab() === 'positions') {
+      <app-position-list />
+    } @else {
+      <app-department-list />
+    }
+  </div>
+</div>

@@ -1,6 +1,6 @@
 export interface ProblemDetails {
-  title:    string;
-  status:   number;
-  detail:   string;
+  statusCode: number;
+  title: string;
+  detail: string;
   instance: string;
 }

@@ -12,9 +12,7 @@ import { PhoneMaskDirective } from "@admin/directives/phone-mask.directive";
 
 const roles = [
   { value: Role.ADMIN, label: 'Administrador' },
-  { value: Role.CLERK, label: 'Oficinista' },
-  { value: Role.DELIVERY, label: 'Repartidor' },
-  { value: Role.MECHANIC, label: 'Mecánico' },
+  { value: Role.SUPERVISOR, label: 'Supervisor' },
 ]
 
 @Component({
@@ -25,9 +23,7 @@ const roles = [
 export class UserForm implements OnInit {
   roles = [
     { value: Role.ADMIN, label: 'Administrador' },
-    { value: Role.CLERK, label: 'Oficinista' },
-    { value: Role.DELIVERY, label: 'Repartidor' },
-    { value: Role.MECHANIC, label: 'Mecánico' },
+    { value: Role.SUPERVISOR, label: 'Supervisor' },
   ];
 
   account = input.required<Account>();
@@ -91,7 +87,6 @@ export class UserForm implements OnInit {
 
 
   openModal() {
-    // El método nativo de los elementos <dialog> es showModal()
     if (window.innerWidth < 768 && this.mobileErrorModal) {
       this.mobileErrorModal.show();
       this.hasError.set(false);

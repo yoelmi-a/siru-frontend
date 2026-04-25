@@ -1,15 +1,17 @@
-/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
-/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
 {
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
       "@auth/*" : ["./src/app/auth/*"],
       "@shared/*": ["./src/app/shared/*"],
-      "@vacants/*": ["./src/app/vacants/*"],
+      "@vacancies/*": ["./src/app/vacancies/*"],
       "@utils/*" : ["./src/app/utils/*"],
       "@admin/*" : ["./src/app/admin/*"],
       "@pipes/*" : ["./src/app/pipes/*"],
+      "@core/*" : ["./src/app/core/*"],
+      "@layouts/*" : ["./src/app/layouts/*"],
+      "@features/*" : ["./src/app/features/*"],
+      "@env/*" : ["./src/environments/*"]
     },
     "strict": true,
     "noImplicitOverride": true,

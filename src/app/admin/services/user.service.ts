@@ -3,10 +3,10 @@ import { User } from '@admin/interfaces/user.interface';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { PaginatedResponse } from '@shared/interfaces/paginated-response.interface';
+import { environment } from '@env/environment';
 import { delay, map, Observable, of, tap } from 'rxjs';
-import { environment } from 'src/environments/environment';
 
-const baseUrl = environment.apiUrl;
+const baseUrl = environment.authUrl;
 
 const emptyAccount: Account = {
   email: '',
@@ -22,7 +22,7 @@ export class UserService {
   private http = inject(HttpClient);
 
   getAllUsers(page: number, pageSize: number): Observable<PaginatedResponse<User>> {
-    return this.http.get<PaginatedResponse<User>>(`${baseUrl}/users/all`,
+    return this.http.get<PaginatedResponse<User>>(`${baseUrl}/accounts/all`,
       {
         params: {
           page: page,
@@ -36,7 +36,7 @@ export class UserService {
       return of(emptyAccount);
     }
 
-    return this.http.get<User>(`${baseUrl}/users/${id}`).pipe(
+    return this.http.get<User>(`${baseUrl}/accounts/${id}`).pipe(
       map((user): Account => ({
         name: user.name,
         lastName: user.lastName,

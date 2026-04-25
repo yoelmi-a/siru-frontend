@@ -1,5 +1,5 @@
 import { Component, input, OnInit } from '@angular/core';
-import { Header } from '@vacants/interfaces/header.interface';
+import { Header } from '@vacancies/interfaces/header.interface';
 
 @Component({
     selector: 'vacants-header',

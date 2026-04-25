@@ -1,47 +1,28 @@
-import { Component, ElementRef, inject, signal, ViewChild, effect } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
-import { AuthService } from '../../services/auth.service';
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '@auth/services/auth.service';
 import { Router, RouterLink } from '@angular/router';
-import { DesktopError } from '@shared/components/desktop-error/desktop-error';
-import { MobileError } from '@shared/components/mobile-error/mobile-error';
-import { FormUtils } from '@utils/form-utils';
 import { FormErrorLabel } from '@shared/components/form-error-label/form-error-label';
-
+import { ToastService } from '@core/services/toast.service';
 
 @Component({
   selector: 'login-page',
-  imports: [ReactiveFormsModule, DesktopError, MobileError, RouterLink, FormErrorLabel],
+  imports: [ReactiveFormsModule, RouterLink, FormErrorLabel],
   templateUrl: './login-page.html'
 })
 export class LoginPage {
   fb = inject(FormBuilder);
-  hasError = signal(false);
-  isPosting = signal(false);
   authService = inject(AuthService);
   router = inject(Router);
+  toast = inject(ToastService);
+
+  isPosting = signal(false);
   errorMessage = this.authService.errorMessage;
-  @ViewChild('errorModal') mobileErrorModal!: MobileError;
 
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.pattern(FormUtils.emailPattern)]],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]]
   });
-
-  constructor() {
-    effect(() => {
-      if (this.hasError()) {
-        this.openModal();
-      }
-    });
-  }
-
-  openModal() {
-    // El método nativo de los elementos <dialog> es showModal()
-    if (window.innerWidth < 768 && this.mobileErrorModal) {
-      this.mobileErrorModal.show();
-      this.hasError.set(false);
-    }
-  }
 
   onSubmit() {
     this.loginForm.markAllAsTouched();
@@ -53,28 +34,17 @@ export class LoginPage {
 
     const { email = '', password = '' } = this.loginForm.value;
 
-    this.authService.login(email!, password!).subscribe((isAuthenticated) => {
-      if (isAuthenticated) {
-        switch (isAuthenticated) {
-          case (this.authService.hasClerkPermission()):
-            this.router.navigateByUrl('/clerk/home');
-            return;
-
-          case (this.authService.hasDeliveryPermission()):
-            this.router.navigateByUrl('/delivery/home');
-            return;
-
-          default:
-            this.router.navigateByUrl('/admin/home');
-            return;
+    this.authService.login(email!, password!).subscribe({
+      next: (success) => {
+        this.isPosting.set(false);
+        if (success) {
+          this.router.navigateByUrl('/');
         }
+      },
+      error: (err) => {
+        this.isPosting.set(false);
+        this.toast.error(err.error?.detail || err.error?.title || 'Login failed');
       }
-
-      this.hasError.set(true);
-      this.isPosting.set(false);
-      setTimeout(() => {
-        this.hasError.set(false);
-      }, 5000);
-    })
+    });
   }
 }
