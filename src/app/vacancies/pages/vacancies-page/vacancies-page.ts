@@ -1,85 +1,34 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { VacantsCard } from '@vacancies/components/vacants-card/vacants-card.component';
-import { Card } from '@vacancies/interfaces/card.interface';
-import { Header } from '@vacancies/interfaces/header.interface';
-import { VacantsHeaderComponent } from '@vacancies/components/vacants-header/vacants-header.component';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
+import { ApiService } from '@core/services/api.service';
+import { ToastService } from '@core/services/toast.service';
+import { VacantDto } from '@core/models/vacancy.models';
 
 @Component({
   selector: 'app-vacancies-page',
-  imports: [VacantsCard, VacantsHeaderComponent],
-  templateUrl: './vacancies-page.html',
+  imports: [RouterLink, DatePipe],
+  templateUrl: './vacancies-page.html'
 })
-export class VacanciesPage {
-  header = signal<Header>({
-    Title: 'Encuentra tu próximo reto',
-    Description: 'Explora cientos de oportunidades en tecnología, diseño y marketing.',
-  });
-  cards = signal<Card[]>([
-    {
-      Title: 'Senior Frontend Dev',
-      State: '¡Nuevo!',
-      Description: 'TechCorp S.A. • Remoto',
-      Tecnologies: ['React'],
-    },
-    {
-      Title: 'Backend Developer',
-      State: 'Activo',
-      Description: 'SoftSolutions • Santo Domingo',
-      Tecnologies: ['C#', '.NET', 'SQL'],
-    },
-    {
-      Title: 'Fullstack Engineer',
-      State: 'Urgente',
-      Description: 'Innovatech • Remoto',
-      Tecnologies: ['Angular', 'Node', 'MongoDB'],
-    },
-    {
-      Title: 'Junior Frontend',
-      State: 'Nuevo',
-      Description: 'WebStudio • Híbrido',
-      Tecnologies: ['HTML', 'CSS', 'JS'],
-    },
-    {
-      Title: 'Senior .NET Dev',
-      State: 'Activo',
-      Description: 'EnterpriseDev • Presencial',
-      Tecnologies: ['.NET', 'SQL Server'],
-    },
-    {
-      Title: 'React Developer',
-      State: 'Nuevo',
-      Description: 'StartupX • Remoto',
-      Tecnologies: ['React', 'TypeScript'],
-    },
-    {
-      Title: 'DevOps Engineer',
-      State: 'Urgente',
-      Description: 'CloudNet • Remoto',
-      Tecnologies: ['Docker', 'Azure', 'CI/CD'],
-    },
-    {
-      Title: 'QA Tester',
-      State: 'Activo',
-      Description: 'QualitySoft • Híbrido',
-      Tecnologies: ['Selenium', 'Cypress'],
-    },
-    {
-      Title: 'UI Designer',
-      State: 'Nuevo',
-      Description: 'CreativeApps • Remoto',
-      Tecnologies: ['Figma', 'CSS'],
-    },
-    {
-      Title: 'Data Analyst',
-      State: 'Activo',
-      Description: 'DataCorp • Presencial',
-      Tecnologies: ['Python', 'SQL', 'PowerBI'],
-    },
-    {
-      Title: 'Mobile Developer',
-      State: 'Nuevo',
-      Description: 'AppWorks • Remoto',
-      Tecnologies: ['Flutter', 'Dart'],
-    },
-  ]);
+export class VacanciesPage implements OnInit {
+  private api = inject(ApiService);
+  private toast = inject(ToastService);
+
+  vacancies = signal<VacantDto[]>([]);
+  loading = signal(true);
+
+  ngOnInit() {
+    this.api.getVacancies().subscribe({
+      next: (data) => {
+        // Only show Open vacancies to the public
+        const openVacancies = data.filter(v => v.status === 'Open');
+        this.vacancies.set(openVacancies);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.toast.error('Failed to load vacancies');
+        this.loading.set(false);
+      }
+    });
+  }
 }

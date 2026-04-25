@@ -1,3 +1,50 @@
-<!-- DONE: Crear componentes separados para el header y positions -->
-<vacants-header [header]=header() />
-<vacants-card [positions]=cards() />
+<div class="bg-base-100 py-12 px-4 shadow-sm border-b border-base-200">
+  <div class="container mx-auto max-w-5xl text-center">
+    <h1 class="text-4xl md:text-5xl font-bold text-primary mb-4">Encuentra tu próximo reto</h1>
+    <p class="text-lg md:text-xl text-base-content/70">Explora cientos de oportunidades y únete a nuestro equipo.</p>
+  </div>
+</div>
+
+<div class="container mx-auto p-4 max-w-5xl py-8">
+  @if (loading()) {
+    <div class="flex justify-center p-12">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else {
+    <div class="overflow-x-auto">
+      <table class="table table-zebra table-pin-rows table-pin-cols w-full bg-base-100 shadow-xl rounded-box">
+        <thead class="bg-base-200">
+          <tr>
+            <th class="text-base font-bold">Position</th>
+            <th class="text-base font-bold">Status</th>
+            <th class="text-base font-bold">Published Date</th>
+            <th class="text-base font-bold text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (vacancy of vacancies(); track vacancy.id) {
+            <tr class="hover cursor-pointer transition-colors" [routerLink]="['/vacancies', vacancy.id]">
+              <td>
+                <div class="font-medium text-base">{{ vacancy.title }}</div>
+                <div class="text-sm text-base-content/60 truncate max-w-xs md:max-w-md">{{ vacancy.description }}</div>
+              </td>
+              <td>
+                <div class="badge badge-success">{{ vacancy.status }}</div>
+              </td>
+              <td class="text-base-content/80">{{ vacancy.publicationDate | date:'mediumDate' }}</td>
+              <td class="text-right">
+                <a [routerLink]="['/vacancies', vacancy.id]" class="btn btn-sm btn-ghost text-primary">View Details &rarr;</a>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="text-center p-8 text-base-content/60 text-lg">
+                No open vacancies at the moment. Please check back later!
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

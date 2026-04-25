@@ -27,7 +27,7 @@ export const routes: Routes = [
         component: DashboardComponent
       },
       {
-        path: 'vacancies/manage',
+        path: 'vacancies-manage',
         loadChildren: () => import('./features/vacancies/vacancies-manage.routes')
       },
       {

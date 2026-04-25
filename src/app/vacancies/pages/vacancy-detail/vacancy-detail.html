@@ -1,0 +1,63 @@
+<div class="container mx-auto p-4 max-w-4xl py-8">
+  <div class="mb-6">
+    <a routerLink="/vacancies" class="btn btn-ghost btn-sm">
+      &larr; Back to Vacancies
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center p-12">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else if (vacancy(); as v) {
+    <div class="card bg-base-100 shadow-xl border border-base-200">
+      <div class="card-body">
+        <div class="flex flex-col md:flex-row justify-between items-start gap-4 border-b border-base-200 pb-6 mb-6">
+          <div>
+            <h1 class="text-3xl font-bold text-base-content mb-2">{{ v.title }}</h1>
+            <div class="flex flex-wrap items-center gap-3 text-sm text-base-content/70">
+              <span class="font-medium">Published: {{ v.publicationDate | date:'mediumDate' }}</span>
+              <div class="badge" 
+                   [class.badge-success]="v.status === 'Open'" 
+                   [class.badge-neutral]="v.status === 'Closed'" 
+                   [class.badge-error]="v.status === 'Cancelled'">
+                {{ v.status }}
+              </div>
+            </div>
+          </div>
+          
+          @if (v.status === 'Open') {
+            <a [routerLink]="['/vacancies', v.id, 'apply']" class="btn btn-primary btn-lg w-full md:w-auto">
+              Apply Now
+            </a>
+          }
+        </div>
+
+        <div class="space-y-8">
+          <section>
+            <h2 class="text-xl font-bold mb-3 text-primary">Description</h2>
+            <div class="prose max-w-none text-base-content/80 whitespace-pre-wrap">
+              {{ v.description }}
+            </div>
+          </section>
+
+          <section>
+            <h2 class="text-xl font-bold mb-3 text-primary">Ideal Profile</h2>
+            <div class="prose max-w-none text-base-content/80 whitespace-pre-wrap">
+              {{ v.profile }}
+            </div>
+          </section>
+        </div>
+        
+        @if (v.status === 'Open') {
+          <div class="mt-8 pt-6 border-t border-base-200 text-center">
+            <h3 class="text-lg font-medium mb-4">Think you are a good fit?</h3>
+            <a [routerLink]="['/vacancies', v.id, 'apply']" class="btn btn-primary">
+              Apply for this position
+            </a>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

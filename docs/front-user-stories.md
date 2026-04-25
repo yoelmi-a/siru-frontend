@@ -92,14 +92,14 @@ This document contains the user story backlog for the SIRUS Angular SPA. Stories
 
 **Acceptance Criteria:**
 
-- [ ] `GET /api/vacancies` is called on page load
-- [ ] Vacancy list page (`/vacancies`) displays all vacancies in a daisyUI table
-- [ ] Each row shows: title, status badge, publication date
-- [ ] Clicking a row navigates to `/vacancies/:id`
-- [ ] Vacancy detail page (`/vacancies/:id`) shows: title, description, profile, status, publication date
-- [ ] "Apply Now" button visible if vacancy status is `Open`
-- [ ] "Apply Now" button navigates to `/vacancies/:id/apply`
-- [ ] Page uses `PublicLayoutComponent` (no auth required)
+- [x] `GET /api/vacancies` is called on page load
+- [x] Vacancy list page (`/vacancies`) displays all vacancies in a daisyUI table
+- [x] Each row shows: title, status badge, publication date
+- [x] Clicking a row navigates to `/vacancies/:id`
+- [x] Vacancy detail page (`/vacancies/:id`) shows: title, description, profile, status, publication date
+- [x] "Apply Now" button visible if vacancy status is `Open`
+- [x] "Apply Now" button navigates to `/vacancies/:id/apply`
+- [x] Page uses `PublicLayoutComponent` (no auth required)
 
 **Linked Requirements:** `api-reference.md` Section 3.1, `VacantDto`
 
@@ -117,17 +117,17 @@ This document contains the user story backlog for the SIRUS Angular SPA. Stories
 
 **Acceptance Criteria:**
 
-- [ ] Route: `GET /vacancies/:id/apply`
-- [ ] Form fields: first name, last name, email, phone number, CV file upload
-- [ ] CV file field accepts only `.pdf` files (client-side validation)
-- [ ] File size client-side check: max 10 MB
-- [ ] `POST /api/vacancies/:vacancyId/applications` is called with `multipart/form-data`
-- [ ] Loading spinner during upload
-- [ ] On `201 Created`: show success toast with "Application submitted successfully!", redirect to vacancy detail
-- [ ] On `400`: show validation error messages from `detail`
-- [ ] On `404`: show "Vacancy not found" toast, redirect to vacancy list
-- [ ] On `409`: show conflict message from `detail`
-- [ ] Page uses `PublicLayoutComponent`
+- [x] Route: `GET /vacancies/:id/apply`
+- [x] Form fields: first name, last name, email, phone number, CV file upload
+- [x] CV file field accepts only `.pdf` files (client-side validation)
+- [x] File size client-side check: max 10 MB
+- [x] `POST /api/vacancies/:vacancyId/applications` is called with `multipart/form-data`
+- [x] Loading spinner during upload
+- [x] On `201 Created`: show success toast with "Application submitted successfully!", redirect to vacancy detail
+- [x] On `400`: show validation error messages from `detail`
+- [x] On `404`: show "Vacancy not found" toast, redirect to vacancy list
+- [x] On `409`: show conflict message from `detail`
+- [x] Page uses `PublicLayoutComponent`
 
 **Linked Requirements:** `api-reference.md` Section 3.1, `VacancyApplicationDto`, `VacancyApplicationResultDto`
 
