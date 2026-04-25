@@ -15,7 +15,6 @@
           <th>Last Names</th>
           <th>Email</th>
           <th>Phone</th>
-          <th>CV</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -26,15 +25,6 @@
             <td>{{ candidate.lastNames }}</td>
             <td>{{ candidate.email }}</td>
             <td>{{ candidate.phoneNumber }}</td>
-            <td>
-              <a
-                [href]="candidate.cvUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn btn-sm btn-ghost">
-                View CV
-              </a>
-            </td>
             <td>
               <button class="btn btn-sm btn-error" (click)="confirmDeleteCandidate(candidate)">Delete</button>
             </td>

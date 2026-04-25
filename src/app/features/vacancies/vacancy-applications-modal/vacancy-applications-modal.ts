@@ -3,11 +3,12 @@ import { DecimalPipe } from '@angular/common';
 import { ApiService, CandidateStatus } from '@core/services/api.service';
 import { ToastService } from '@core/services/toast.service';
 import { VacancyApplicationResultDto } from '@core/models/vacancy.models';
-
+import { environment } from '../../../../environments/environment';
+ 
 @Component({
-  selector: 'app-vacancy-applications-modal',
+  selector: 'app-vacancy-applications-modal', 
   imports: [DecimalPipe],
-  templateUrl: './vacancy-applications-modal.html'
+  templateUrl: './vacancy-applications-modal.html'  
 })
 export class VacancyApplicationsModalComponent implements OnInit {
   private api = inject(ApiService);
@@ -79,6 +80,13 @@ export class VacancyApplicationsModalComponent implements OnInit {
         this.isRecalculating.set(false);
       }
     });
+  }
+
+  getFullCvUrl(path: string): string {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    const base = environment.apiUrl.replace(/\/api$/, '');
+    return `${base}${path.startsWith('/') ? '' : '/'}${path}`;
   }
 
   changeStatus(applicationId: string, newStatus: CandidateStatus) {
