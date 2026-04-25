@@ -1,0 +1,82 @@
+<dialog class="modal modal-open">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">
+      {{ vacancy() ? 'Edit Vacancy' : 'Create Vacancy' }}
+    </h3>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="py-4">
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text">Title</span>
+        </label>
+        <input
+          type="text"
+          formControlName="title"
+          class="input input-bordered"
+          placeholder="Vacancy title" />
+        <form-error-label [control]="form.get('title')!" />
+      </div>
+
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text">Description</span>
+        </label>
+        <textarea
+          formControlName="description"
+          class="textarea textarea-bordered h-24"
+          placeholder="Full job description"></textarea>
+        <form-error-label [control]="form.get('description')!" />
+      </div>
+
+      <div class="form-control mb-4">
+        <label class="label">
+          <span class="label-text">Profile</span>
+        </label>
+        <textarea
+          formControlName="profile"
+          class="textarea textarea-bordered h-24"
+          placeholder="Ideal candidate profile"></textarea>
+        <form-error-label [control]="form.get('profile')!" />
+      </div>
+
+      @if (vacancy()) {
+        <div class="form-control mb-4">
+          <label class="label">
+            <span class="label-text">Status</span>
+          </label>
+          <select formControlName="status" class="select select-bordered">
+            <option value="Open">Open</option>
+            <option value="Closed">Closed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+          <form-error-label [control]="form.get('status')!" />
+        </div>
+      } @else {
+        <div class="form-control mb-4">
+          <label class="label">
+            <span class="label-text">Position</span>
+          </label>
+          <select formControlName="positionId" class="select select-bordered">
+            <option [ngValue]="null">Select position</option>
+            @for (pos of positions(); track pos.id) {
+              <option [value]="pos.id">{{ pos.name }}</option>
+            }
+          </select>
+          <form-error-label [control]="form.get('positionId')!" />
+        </div>
+      }
+
+      <div class="modal-action">
+        <button type="button" class="btn" (click)="onCancel()">Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="isPosting()">
+          @if (isPosting()) {
+            <span class="loading loading-spinner"></span>
+          } @else {
+            {{ vacancy() ? 'Update' : 'Create' }}
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="modal-backdrop" (click)="onCancel()"></div>
+</dialog>

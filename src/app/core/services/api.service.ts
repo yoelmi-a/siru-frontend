@@ -43,23 +43,23 @@ export class ApiService {
 // VACANCIES
 // ============================================================
   getVacancies(): Observable<VacantDto[]> {
-    return this.http.get<VacantDto[]>(`${this.baseUrl}/vacancies`);
+    return this.http.get<VacantDto[]>(`${this.baseUrl}/Vacants`);
   }
 
   getVacancy(id: string): Observable<VacantDto> {
-    return this.http.get<VacantDto>(`${this.baseUrl}/vacancies/${id}`);
+    return this.http.get<VacantDto>(`${this.baseUrl}/Vacants/${id}`);
   }
 
   createVacancy(dto: SaveVacantDto): Observable<VacantDto> {
-    return this.http.post<VacantDto>(`${this.baseUrl}/vacancies`, dto);
+    return this.http.post<VacantDto>(`${this.baseUrl}/Vacants`, dto);
   }
 
   updateVacancy(id: string, dto: UpdateVacantDto): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/vacancies/${id}`, dto);
+    return this.http.put<void>(`${this.baseUrl}/Vacants/${id}`, dto);
   }
 
   deleteVacancy(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/vacancies/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/Vacants/${id}`);
   }
 
   applyToVacancy(vacancyId: string, dto: VacancyApplicationDto): Observable<VacancyApplicationResultDto> {
@@ -70,12 +70,12 @@ export class ApiService {
     formData.append('candidatePhoneNumber', dto.candidatePhoneNumber);
     formData.append('cvFile', dto.cvFile);
     return this.http.post<VacancyApplicationResultDto>(
-      `${this.baseUrl}/vacancies/${vacancyId}/applications`, formData
+      `${this.baseUrl}/Vacants/${vacancyId}/applications`, formData
     );
   }
 
   recalculateScores(vacancyId: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/vacancies/${vacancyId}/recalculate-scores`, {});
+    return this.http.post<void>(`${this.baseUrl}/Vacants/${vacancyId}/recalculate-scores`, {});
   }
 
   getVacancyApplications(vacancyId: string, params?: VacancyApplicationQueryParams): Observable<PaginatedResponse<VacancyApplicationResultDto>> {
@@ -83,7 +83,7 @@ export class ApiService {
     if (params?.page) httpParams = httpParams.set('page', params.page.toString());
     if (params?.pageSize) httpParams = httpParams.set('pageSize', params.pageSize.toString());
     return this.http.get<PaginatedResponse<VacancyApplicationResultDto>>(
-      `${this.baseUrl}/vacancies/${vacancyId}/applications`,
+      `${this.baseUrl}/Vacants/${vacancyId}/applications`,
       { params: httpParams }
     );
   }

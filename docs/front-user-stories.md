@@ -179,20 +179,20 @@ This document contains the user story backlog for the SIRUS Angular SPA. Stories
 
 **Acceptance Criteria:**
 
-- [ ] Route: `GET /vacancies/manage` — list of all vacancies with status filter tabs (All / Open / Closed / Cancelled)
-- [ ] Requires `AdminGuard`
-- [ ] `GET /api/vacancies` called to populate the list
-- [ ] daisyUI table with columns: Title, Status badge, Publication Date, Actions
-- [ ] "Create Vacancy" button navigates to `/vacancies/manage/new`
-- [ ] "Edit" button navigates to `/vacancies/manage/:id/edit`
-- [ ] "Delete" button opens daisyUI modal confirmation, then calls `DELETE /api/vacancies/:id`
-- [ ] Vacancy create/edit form (`/vacancies/manage/new`, `/vacancies/manage/:id/edit`):
+- [x] Route: `GET /vacancies/manage` — list of all vacancies with status filter tabs (All / Open / Closed / Cancelled)
+- [x] Requires `AdminGuard`
+- [x] `GET /api/vacancies` called to populate the list
+- [x] daisyUI table with columns: Title, Status badge, Publication Date, Actions
+- [x] "Create Vacancy" button navigates to `/vacancies/manage/new`
+- [x] "Edit" button navigates to `/vacancies/manage/:id/edit`
+- [x] "Delete" button opens daisyUI modal confirmation, then calls `DELETE /api/vacancies/:id`
+- [x] Vacancy create/edit form (`/vacancies/manage/new`, `/vacancies/manage/:id/edit`):
   - Fields: title, description, profile, status (dropdown: Open/Closed/Cancelled), position (dropdown from `GET /api/positions`)
   - `POST /api/vacancies` for create, `PUT /api/vacancies/:id` for edit
   - Cancel button navigates back to list
   - Validation errors shown per field from backend `400` response `detail`
-- [ ] Success toast on create/edit/delete
-- [ ] Uses `MainLayoutComponent`
+- [x] Success toast on create/edit/delete
+- [x] Uses `MainLayoutComponent`
 
 **Linked Requirements:** `api-reference.md` Section 3.1, `SaveVacantDto`, `UpdateVacantDto`
 
